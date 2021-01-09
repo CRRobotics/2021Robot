@@ -8,7 +8,9 @@ import org.team639.lib.math.PID;
 
 public class Spinner implements Subsystem
 {
-    
+    private int currentColor;
+    private int targetColor;
+
     private TalonSRX motor;
     
     public Spinner()
@@ -19,5 +21,10 @@ public class Spinner implements Subsystem
     public void setMotorSpeed(double speed)
     {
         motor.set(ControlMode.PercentOutput, speed);
+    }
+
+    public int getColor()
+    {
+        return currentColor;
     }
 }
