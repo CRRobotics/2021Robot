@@ -126,7 +126,8 @@ public class Robot extends TimedRobot
         JoystickButton rightDriveBumper = new JoystickButton(drivingXboxController, XboxController.Button.kBumperRight.value);
 
         rightDriveBumper.whenReleased(new ToggleDriveTrainGears());
-        yDriveButton.whenPressed(new MoveRotateChain(new Command[] {new AutoRotateToTarget()}));
+        //yDriveButton.whenPressed(new MoveRotateChain(new Command[] {yDriveButton.whenPressed(yDriveButton.whenPressed(}));
+        yDriveButton.whenPressed(new AutoRotateToTarget());
         aDriveButton.whenPressed(new ToggleIndexAuto());
 
         leftControlBumper.whenPressed(new ToggleClimbingControls());
