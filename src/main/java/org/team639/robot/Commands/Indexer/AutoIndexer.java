@@ -1,5 +1,9 @@
 package org.team639.robot.Commands.Indexer;
 
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.team639.robot.Robot;
+import org.team639.robot.Subsystems.Index;
+
 public class AutoIndexer extends CommandBase
 {
     private Index indexer;
