@@ -99,7 +99,7 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().registerSubsystem(shooter);
         CommandScheduler.getInstance().registerSubsystem(climbing);
         CommandScheduler.getInstance().registerSubsystem(dataManager);
-        
+
         CommandScheduler.getInstance().setDefaultCommand(driveTrain, new JoystickDrive());
         CommandScheduler.getInstance().setDefaultCommand(acquisition, new ManualAcquisition());
         CommandScheduler.getInstance().setDefaultCommand(indexer, new TriggerIndexer());
@@ -127,11 +127,13 @@ public class Robot extends TimedRobot
         JoystickButton yDriveButton = new JoystickButton(drivingXboxController, XboxController.Button.kY.value);
         JoystickButton rightDriveBumper = new JoystickButton(drivingXboxController, XboxController.Button.kBumperRight.value);
 
+        //Driver Settings
         rightDriveBumper.whenReleased(new ToggleDriveTrainGears());
         //yDriveButton.whenPressed(new MoveRotateChain(new Command[] {yDriveButton.whenPressed(yDriveButton.whenPressed(}));
         yDriveButton.whenPressed(new AutoRotateToTarget());
         aDriveButton.whenPressed(new ToggleIndexAuto());
 
+        //Controller Settings
         leftControlBumper.whenPressed(new ToggleClimbingControls());
         yButton.whenPressed(new ShootMaxSpeed());
         xButton.whenPressed(new ToggleAcquisitionPistons());

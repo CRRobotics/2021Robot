@@ -1,36 +1,27 @@
 package org.team639.robot.Commands.Spinner;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-
 import com.revrobotics.ColorSensorV3.RawColor;
-
 import org.team639.robot.Robot;
 import org.team639.robot.Subsystems.Spinner;
-public class PanelSpin3Times extends CommandBase {
 
-    boolean done;
+public class SpinToColor extends CommandBase {
+
+    private boolean done;
     private Spinner controlPanel;
     private int ColorCount;
     private RawColor targetColor;
-    private RawColor currentColor;
 
-
-    public PanelSpin3Times(int rotations)
+    public SpinToColor(RawColor targetColor)
     {
-        ColorCount = 0;
-        targetColor = controlPanel.getColor();
+        this.targetColor = targetColor;
         controlPanel = Robot.getSpinner();
     }
 
     public void updateColor()
     {
-        currentColor = controlPanel.getColor();
-        if (currentColor == targetColor)
-            ColorCount ++;
-        if(ColorCount < 6)
-        {
-            done = true;
-        }
+        RawColor currentColor = controlPanel.getColor();
+        if (currentColor == targetColor) { done = true; }
     }
 
     @Override
@@ -46,9 +37,7 @@ public class PanelSpin3Times extends CommandBase {
         updateColor();
         if(isDone())
             end(true);
-
     }
-
 
     public boolean isDone()
     {

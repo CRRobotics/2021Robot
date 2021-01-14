@@ -12,7 +12,6 @@ import org.team639.robot.Subsystems.Shooter;
 
 public class RunAcquisitionForTime extends CommandBase
 {
-
     private Index indexer;
     private Acquisition acquisition;
     private long startMillis;
