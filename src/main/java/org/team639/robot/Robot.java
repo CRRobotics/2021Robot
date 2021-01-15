@@ -39,14 +39,16 @@ public class Robot extends TimedRobot
     private String m_autoSelected;
     private final SendableChooser<String> m_chooser = new SendableChooser<>();
     
-    private static DriveTrain driveTrain;
-    private static Acquisition acquisition;
-    private static AcquisitionPistons acquisitionPistons;
-    private static Index indexer;
-    private static Shooter shooter;
-    private static ShooterPistons shooterPistons;
-    private static Climbing climbing;
-    public static boolean climbingJoysticksEnabled;
+    private static DriveTrain driveTrain = new DriveTrain();;
+    private static Acquisition acquisition = new Acquisition();
+    private static AcquisitionPistons acquisitionPistons = new AcquisitionPistons();
+    private static Index indexer = new Index();
+    private static Shooter shooter = new Shooter();
+
+    private static ShooterPistons shooterPistons = new ShooterPistons();
+    private static Climbing climbing = new Climbing();
+
+    public static boolean climbingJoysticksEnabled = false;
     private static Spinner spinner;
     private static DataManager dataManager;
 
@@ -54,6 +56,10 @@ public class Robot extends TimedRobot
     
     private static XboxController drivingXboxController;
     private static XboxController controlXboxController;
+
+
+
+
 
     //private static AcquisitionToIndexer acquisitionToIndexer = new AcquisitionToIndexer();
     //private static SenseIndex sensor = new SenseIndex();
@@ -68,16 +74,7 @@ public class Robot extends TimedRobot
     {
         m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
         m_chooser.addOption("My Auto", kCustomAuto);
-        
-        driveTrain = new DriveTrain();
-        acquisition = new Acquisition();
-        acquisitionPistons = new AcquisitionPistons();
-        indexer = new Index();
-        shooter = new Shooter();
-        shooterPistons = new ShooterPistons();
-        climbing = new Climbing();
-        climbingJoysticksEnabled = false;
-        spinner = new Spinner();
+
         dataManager = new DataManager();
         
         defaultAngle = driveTrain.getHeading().getDegrees();
@@ -106,7 +103,7 @@ public class Robot extends TimedRobot
         
         //CommandScheduler.getInstance().setDefaultCommand(shooter, new JoystickShoot());
         CommandScheduler.getInstance().setDefaultCommand(climbing, new JoystickClimb());
-        CommandScheduler.getInstance().setDefaultCommand(spinner, new JoystickSpinner());
+        //CommandScheduler.getInstance().setDefaultCommand(spinner, new JoystickSpinner());
     }
     
     /**

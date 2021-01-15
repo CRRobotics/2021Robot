@@ -2,6 +2,7 @@ package org.team639.robot.Commands.Acquisition;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.team639.lib.Constants;
 import org.team639.robot.Robot;
 
@@ -13,11 +14,10 @@ import org.team639.robot.Subsystems.Acquisition;
 import java.util.Set;
 import java.util.HashSet;
 
-public class ManualAcquisition implements Command
+public class ManualAcquisition extends CommandBase
 {
     
     private Acquisition acquisition;
-    private Set requirements;
     private boolean manualOverride = false;
     private XboxController controlXBoxController;
     double leftTriggerInput;
@@ -26,7 +26,7 @@ public class ManualAcquisition implements Command
     public ManualAcquisition()
     {
         //requirements = new HashSet<Subsystem>();
-        requirements.add(Robot.getAcquisition());
+        addRequirements(Robot.getAcquisition());
         acquisition = Robot.getAcquisition();
         controlXBoxController = Robot.getControlXboxController();
     }
@@ -68,11 +68,5 @@ public class ManualAcquisition implements Command
     {
         //Todo: add code that recognizes when a ball has been placed in the indexer
         return false;
-    }
-    
-    @Override
-    public Set<Subsystem> getRequirements()
-    {
-        return requirements;
     }
 }

@@ -9,7 +9,6 @@ public class SpinToColor extends CommandBase {
 
     private boolean done;
     private Spinner controlPanel;
-    private int ColorCount;
     private RawColor targetColor;
 
     public SpinToColor(RawColor targetColor)
