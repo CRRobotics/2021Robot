@@ -3,3 +3,6 @@
 build
 *.iml
 out
+.project
+settings.json
+.vscode

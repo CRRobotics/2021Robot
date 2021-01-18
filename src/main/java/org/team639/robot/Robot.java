@@ -1,5 +1,7 @@
 package org.team639.robot;
 
+import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.Filesystem;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
@@ -12,6 +14,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -31,6 +34,8 @@ import org.team639.robot.Commands.Spinner.JoystickSpinner;
 import org.team639.robot.Subsystems.*;
 import org.team639.lib.Constants;
 
+import java.io.IOException;
+import java.nio.file.Path;
 import java.util.List;
 
 
@@ -67,7 +72,8 @@ public class Robot extends TimedRobot
     private static XboxController drivingXboxController;
     private static XboxController controlXboxController;
 
-
+    //The path you want to use
+    private String trajectoryJSON = "Pathweaver/output/snake.wpilib.json";
 
 
 
@@ -147,8 +153,27 @@ public class Robot extends TimedRobot
         bButton.whenPressed(new ToggleShooterPistons());
     }
 
+    /**
+     * Loads a path from pathweaver into a Trajectory object
+     * @return the trajectory loaded
+     */
+    public Trajectory loadConfig(String path)
+    {
+        try {
+            Path trajectoryPath = Filesystem.getDeployDirectory().toPath().resolve(path);
+            Trajectory pathweaverTest = TrajectoryUtil.fromPathweaverJson(trajectoryPath);
+            return pathweaverTest;
+        } catch (IOException ex) {
+            DriverStation.reportError("Unable to open trajectory: " + path, ex.getStackTrace());
+        }
+        System.out.println("Warning: Path not Loaded");
+        return null;
+    }
 
-    
+    /**
+     * Returns autonomous command to use
+     * @return command to be used for autonomous
+     */
     public Command getAutonomousCommand()
     {
     /*
@@ -212,17 +237,6 @@ public class Robot extends TimedRobot
                 config
         );
 
-        //Generates a trajectory. Starts at 0,0 -> 1,1 -> 2,2 -> 3,1. This should draw a semicircle. Ends at start point
-        Trajectory semicircle = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0,0, new Rotation2d(0)),
-                List.of(
-                        new Translation2d(1,1),
-                        new Translation2d(2,2),
-                        new Translation2d(3,1)
-                ),
-                new Pose2d(1,1, new Rotation2d(0)),
-                config
-        );
 
         //BOX BUG
         Trajectory boxBug = TrajectoryGenerator.generateTrajectory(
@@ -245,9 +259,10 @@ public class Robot extends TimedRobot
                 config
         );
 
+        Trajectory pathweaverTest = loadConfig(trajectoryJSON);
 
         RamseteCommand ramseteCommand = new RamseteCommand(
-                trajectory,
+                pathweaverTest,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
