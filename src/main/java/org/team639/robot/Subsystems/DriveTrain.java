@@ -39,7 +39,17 @@ public class DriveTrain implements Subsystem
     // p ~ 1.36
     PIDController leftPIDController = new PIDController(.986, 0, 0);
     PIDController rightPIDController = new PIDController(.986, 0, 0);
-    
+
+    /**
+     * Returns the current wheel speeds of the robot.
+     *
+     * @return The current wheel speeds.
+     */
+    public DifferentialDriveWheelSpeeds getWheelSpeeds()
+    {
+        return new DifferentialDriveWheelSpeeds(leftMaster.getEncoder().getVelocity(), leftMaster.getEncoder().getVelocity());
+    }
+
     public enum DriveMode
     {
         TankDrive,

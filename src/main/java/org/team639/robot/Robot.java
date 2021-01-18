@@ -2,12 +2,20 @@ package org.team639.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.trajectory.Trajectory;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.team639.robot.Commands.Acquisition.ManualAcquisition;
 import org.team639.robot.Commands.Acquisition.ToggleAcquisitionPistons;
@@ -22,6 +30,8 @@ import org.team639.robot.Commands.Shooter.ToggleShooterPistons;
 import org.team639.robot.Commands.Spinner.JoystickSpinner;
 import org.team639.robot.Subsystems.*;
 import org.team639.lib.Constants;
+
+import java.util.List;
 
 
 /**
@@ -76,7 +86,6 @@ public class Robot extends TimedRobot
         m_chooser.addOption("My Auto", kCustomAuto);
 
         dataManager = new DataManager();
-        
         defaultAngle = driveTrain.getHeading().getDegrees();
         
         setUpXboxController();
@@ -142,7 +151,6 @@ public class Robot extends TimedRobot
     
     public Command getAutonomousCommand()
     {
-
     /*
         TrajectoryConfig config = new TrajectoryConfig(1, 1);
         config.setKinematics(driveTrain.getKinematics());
@@ -166,6 +174,7 @@ public class Robot extends TimedRobot
         return ramseteCommand;
         
      */
+        /*
         return new MoveRotateChain(new Command[] {
                 new Shoot(),
                 new AutoRotate(180),
@@ -174,6 +183,83 @@ public class Robot extends TimedRobot
                 new AutoDriveForward(2),
                 new Shoot(),
                 new AutoRotate(180)});
+
+         */
+
+        var autoVoltageConstraint =
+                new DifferentialDriveVoltageConstraint(
+                        new SimpleMotorFeedforward(DriveConstants.ksVolts,
+                                DriveConstants.kvVoltSecondsSquareMeter,
+                                DriveConstants.kaVoltSecondsSquaredPerMeter),
+                        DriveConstants.kDriveKinematics,
+                        10);
+
+        //Set a trajectory config, setting constraints and stuff
+        TrajectoryConfig config =
+                new TrajectoryConfig(DriveConstants.kMaxSpeedMetersPerSecond,
+                        DriveConstants.kMaxAccelerationMetersPerSecondSquared)
+                        .setKinematics(DriveConstants.kDriveKinematics)
+                        .addConstraint(autoVoltageConstraint);
+
+        //Generates a trajectory. Starts at 0,0 -> 1,1 -> 2,-1. This should draw an S pattern. Ends 3 Meters ahead
+        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(0, 0, new Rotation2d(0)),
+                List.of(
+                        new Translation2d(1, 1),
+                        new Translation2d(2, -1)
+                ),
+                new Pose2d(3, 0, new Rotation2d(0)),
+                config
+        );
+
+        //Generates a trajectory. Starts at 0,0 -> 1,1 -> 2,2 -> 3,1. This should draw a semicircle. Ends at start point
+        Trajectory semicircle = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(0,0, new Rotation2d(0)),
+                List.of(
+                        new Translation2d(1,1),
+                        new Translation2d(2,2),
+                        new Translation2d(3,1)
+                ),
+                new Pose2d(1,1, new Rotation2d(0)),
+                config
+        );
+
+        //BOX BUG
+        Trajectory boxBug = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(0,0, new Rotation2d(0)),
+                List.of(
+                        new Translation2d(2,0),
+                        new Translation2d(2,2),
+                        new Translation2d(0,2),
+                        new Translation2d(0,0),
+                        new Translation2d(2,0),
+                        new Translation2d(2,2),
+                        new Translation2d(0,2),
+                        new Translation2d(0,0),
+                        new Translation2d(2,0),
+                        new Translation2d(2,2),
+                        new Translation2d(0,2),
+                        new Translation2d(0,0)
+                ),
+                new Pose2d(0,0, new Rotation2d(0)),
+                config
+        );
+
+
+        RamseteCommand ramseteCommand = new RamseteCommand(
+                trajectory,
+                driveTrain::getPose,
+                new RamseteController(2.0, 0.7),
+                driveTrain.getFeedForward(),
+                driveTrain.getKinematics(),
+                driveTrain::getWheelSpeeds,
+                driveTrain.getLeftPIDController(),
+                driveTrain.getRightPIDController(),
+                driveTrain::setVoltages,
+                driveTrain
+                );
+
+        return ramseteCommand;
     }
     
     
