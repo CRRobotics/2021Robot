@@ -16,9 +16,10 @@ public class TriggerIndexer extends CommandBase
         indexer = Robot.getIndexer();
         addRequirements(indexer);
     }
-    
-    public void execute()
+
+    public void initialize()
     {
+        /*
         if(!indexer.isAuto() && !Robot.climbingJoysticksEnabled) {
             if (Robot.getControlXboxController().getTriggerAxis(GenericHID.Hand.kRight) > Constants.triggerInputThreshold) {
                 indexer.turnOn();
@@ -37,6 +38,11 @@ public class TriggerIndexer extends CommandBase
                 indexer.turnOff();
             }
         }
+        */
+         indexer.setSpeed(1);
     }
-    
+    public void end()
+    {
+        indexer.setSpeed(0);
+    }
 }

@@ -1,9 +1,6 @@
 package org.team639.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -114,7 +111,7 @@ public class Robot extends TimedRobot
 
         CommandScheduler.getInstance().setDefaultCommand(driveTrain, new JoystickDrive());
         CommandScheduler.getInstance().setDefaultCommand(acquisition, new ManualAcquisition());
-        CommandScheduler.getInstance().setDefaultCommand(indexer, new TriggerIndexer());
+        //CommandScheduler.getInstance().setDefaultCommand(indexer, new TriggerIndexer());
         
         //CommandScheduler.getInstance().setDefaultCommand(shooter, new JoystickShoot());
         CommandScheduler.getInstance().setDefaultCommand(climbing, new JoystickClimb());
@@ -133,6 +130,8 @@ public class Robot extends TimedRobot
         JoystickButton xButton = new JoystickButton(controlXboxController, XboxController.Button.kX.value);
         JoystickButton yButton = new JoystickButton(controlXboxController, XboxController.Button.kY.value);
         JoystickButton leftControlBumper = new JoystickButton(controlXboxController, XboxController.Button.kBumperRight.value);
+        JoystickButton rightControlBumper = new JoystickButton(controlXboxController, XboxController.Button.kBumperLeft.value);
+
 
         JoystickButton xDriveButton = new JoystickButton(drivingXboxController, XboxController.Button.kX.value);
         JoystickButton aDriveButton = new JoystickButton(drivingXboxController, XboxController.Button.kA.value);
@@ -146,11 +145,13 @@ public class Robot extends TimedRobot
         aDriveButton.whenPressed(new ToggleIndexAuto());
 
         //Controller Settings
-        leftControlBumper.whenPressed(new ToggleClimbingControls());
+        //leftControlBumper.whenPressed(new ToggleClimbingControls());
         yButton.whenPressed(new ShootMaxSpeed());
         xButton.whenPressed(new ToggleAcquisitionPistons());
         aButton.whenPressed(new Shoot());
         bButton.whenPressed(new ToggleShooterPistons());
+        //rightControlBumper.whenPressed(new TriggerIndexer());
+        rightControlBumper.whenPressed(new TriggerIndexer());
     }
 
     /**
@@ -262,7 +263,7 @@ public class Robot extends TimedRobot
         Trajectory pathweaverTest = loadConfig(trajectoryJSON);
 
         RamseteCommand ramseteCommand = new RamseteCommand(
-                pathweaverTest,
+                boxBug,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -303,7 +304,9 @@ public class Robot extends TimedRobot
     @Override
     public void robotPeriodic()
     {
-    
+        double[] positions = driveTrain.getPositions();
+        SmartDashboard.putNumber("Rotation1", positions[0]);
+        SmartDashboard.putNumber("Rotation2", positions[1]);
     }
     
     /**
