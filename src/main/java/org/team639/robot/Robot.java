@@ -151,7 +151,7 @@ public class Robot extends TimedRobot
         aButton.whenPressed(new Shoot());
         bButton.whenPressed(new ToggleShooterPistons());
         //rightControlBumper.whenPressed(new TriggerIndexer());
-        rightControlBumper.whenPressed(new TriggerIndexer());
+        rightControlBumper.whileHeld(new TriggerIndexer());
     }
 
     /**

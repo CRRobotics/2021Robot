@@ -10,13 +10,14 @@ public class TriggerIndexer extends CommandBase
 {
 
     private Index indexer;
-    
+
     public TriggerIndexer()
     {
         indexer = Robot.getIndexer();
         addRequirements(indexer);
     }
 
+    @Override
     public void initialize()
     {
         /*
@@ -41,8 +42,16 @@ public class TriggerIndexer extends CommandBase
         */
          indexer.setSpeed(1);
     }
-    public void end()
+
+    @Override
+    public void end(boolean interrupted)
     {
         indexer.setSpeed(0);
     }
+
+    public boolean isFinished()
+    {
+        return false;
+    }
+
 }
