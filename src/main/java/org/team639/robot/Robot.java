@@ -69,8 +69,7 @@ public class Robot extends TimedRobot
 
     private static double defaultAngle; // In degrees
     
-    private static XboxController drivingXboxController;
-    private static XboxController controlXboxController;
+
 
     //The path you want to use
     private String trajectoryJSON = "Pathweaver/output/snake.wpilib.json";
@@ -115,10 +114,7 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().setDefaultCommand(driveTrain, new JoystickDrive());
         CommandScheduler.getInstance().setDefaultCommand(acquisition, new ManualAcquisition());
         CommandScheduler.getInstance().setDefaultCommand(indexer, new TriggerIndexer());
-        
-        //CommandScheduler.getInstance().setDefaultCommand(shooter, new JoystickShoot());
         CommandScheduler.getInstance().setDefaultCommand(climbing, new JoystickClimb());
-        //CommandScheduler.getInstance().setDefaultCommand(spinner, new JoystickSpinner());
     }
     
     /**
@@ -126,6 +122,7 @@ public class Robot extends TimedRobot
      */
     private void setUpXboxController()
     {
+        /*
         drivingXboxController = new XboxController(Constants.drivingXboxControllerPort);
         controlXboxController = new XboxController(Constants.controlXboxControllerPort);
         JoystickButton aButton = new JoystickButton(controlXboxController, XboxController.Button.kA.value);
@@ -138,19 +135,18 @@ public class Robot extends TimedRobot
         JoystickButton aDriveButton = new JoystickButton(drivingXboxController, XboxController.Button.kA.value);
         JoystickButton yDriveButton = new JoystickButton(drivingXboxController, XboxController.Button.kY.value);
         JoystickButton rightDriveBumper = new JoystickButton(drivingXboxController, XboxController.Button.kBumperRight.value);
-
+        */
         //Driver Settings
-        rightDriveBumper.whenReleased(new ToggleDriveTrainGears());
-        //yDriveButton.whenPressed(new MoveRotateChain(new Command[] {yDriveButton.whenPressed(yDriveButton.whenPressed(}));
-        yDriveButton.whenPressed(new AutoRotateToTarget());
-        aDriveButton.whenPressed(new ToggleIndexAuto());
+        OI.DriverRightBumper.whenReleased(new ToggleDriveTrainGears());
+        OI.DriverButtonY.whenPressed(new AutoRotateToTarget());
+        OI.DriverButtonA.whenPressed(new ToggleIndexAuto());
 
         //Controller Settings
-        leftControlBumper.whenPressed(new ToggleClimbingControls());
-        yButton.whenPressed(new ShootMaxSpeed());
-        xButton.whenPressed(new ToggleAcquisitionPistons());
-        aButton.whenPressed(new Shoot());
-        bButton.whenPressed(new ToggleShooterPistons());
+        OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
+        OI.ControlButtonY.whenPressed(new ShootMaxSpeed());
+        OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
+        OI.ControlButtonA.whenPressed(new Shoot());
+        OI.ControlButtonB.whenPressed(new ToggleShooterPistons());
     }
 
     /**
@@ -277,20 +273,7 @@ public class Robot extends TimedRobot
         return ramseteCommand;
     }
     
-    
-    /**
-     * Returns the XBoxController used for driving.
-     * @return The XBoxController used for driving.
-     */
-    public static XboxController getDrivingXboxController()
-    {
-        return drivingXboxController;
-    }
-    /**
-     * Returns the XBoxController used for extra controlling.
-     * @return The XBoxController used for extra controlling.
-     */
-    public static XboxController getControlXboxController() { return controlXboxController; }
+
 
     /**
      * This function is called every robot packet, no matter the mode. Use

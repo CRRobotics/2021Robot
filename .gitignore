@@ -6,3 +6,6 @@ out
 .project
 settings.json
 .vscode
+.classpath
+.settings
+.factorypath

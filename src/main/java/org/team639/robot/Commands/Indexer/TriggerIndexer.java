@@ -3,6 +3,7 @@ package org.team639.robot.Commands.Indexer;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.team639.lib.Constants;
+import org.team639.robot.OI;
 import org.team639.robot.Robot;
 import org.team639.robot.Subsystems.Index;
 
@@ -20,10 +21,10 @@ public class TriggerIndexer extends CommandBase
     public void execute()
     {
         if(!indexer.isAuto() && !Robot.climbingJoysticksEnabled) {
-            if (Robot.getControlXboxController().getTriggerAxis(GenericHID.Hand.kRight) > Constants.triggerInputThreshold) {
+            if (OI.ControlController.getTriggerAxis(GenericHID.Hand.kRight) > Constants.triggerInputThreshold) {
                 indexer.turnOn();
             } else {
-                indexer.setSpeed(Robot.getControlXboxController().getY(GenericHID.Hand.kLeft));
+                indexer.setSpeed(OI.ControlController.getY(GenericHID.Hand.kLeft));
             }
         }
         else

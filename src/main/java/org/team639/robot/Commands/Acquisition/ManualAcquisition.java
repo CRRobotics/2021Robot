@@ -4,6 +4,7 @@ import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.team639.lib.Constants;
+import org.team639.robot.OI;
 import org.team639.robot.Robot;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -19,7 +20,6 @@ public class ManualAcquisition extends CommandBase
     
     private Acquisition acquisition;
     private boolean manualOverride = false;
-    private XboxController controlXBoxController;
     double leftTriggerInput;
     double rightTriggerInput;
     
@@ -28,7 +28,6 @@ public class ManualAcquisition extends CommandBase
         //requirements = new HashSet<Subsystem>();
         addRequirements(Robot.getAcquisition());
         acquisition = Robot.getAcquisition();
-        controlXBoxController = Robot.getControlXboxController();
     }
     
     @Override
@@ -40,8 +39,8 @@ public class ManualAcquisition extends CommandBase
     @Override
     public void execute()
     {
-        leftTriggerInput = controlXBoxController.getTriggerAxis(GenericHID.Hand.kLeft);
-        rightTriggerInput = controlXBoxController.getTriggerAxis(GenericHID.Hand.kRight);
+        leftTriggerInput = OI.ControlController.getTriggerAxis(GenericHID.Hand.kLeft);
+        rightTriggerInput = OI.ControlController.getTriggerAxis(GenericHID.Hand.kRight);
         if(rightTriggerInput > Constants.triggerInputThreshold)
         {
             acquisition.runAcquisition();

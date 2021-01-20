@@ -4,11 +4,12 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.team639.robot.Robot;
 import org.team639.robot.Subsystems.Index;
 
+/**
+ * Automatically indexes balls based on sensor reading
+ */
 public class AutoIndexer extends CommandBase
 {
     private Index indexer;
-    private long startMillis;
-    private long waitTimeMillis;
     private boolean done;
     
     public AutoIndexer()
@@ -17,17 +18,14 @@ public class AutoIndexer extends CommandBase
         addRequirements(indexer);
     }
 
-    public void execute()
+    public void initialize()
     {
-        if (indexer.getSensorValue())
-        {
-            indexer.turnOn();
-        }
-        else if (!indexer.getSensorValue())
-        {
-            indexer.turnOff();
-        }
+        if (!indexer.isAuto() && indexer.getSensorValue()) { indexer.turnOn(); }
+    }
+
+    public void end(boolean interrupted)
+    {
+        indexer.turnOff();
     }
 }
 
-//TODO might not work

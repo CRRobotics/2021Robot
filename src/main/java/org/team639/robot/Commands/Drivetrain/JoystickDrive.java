@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import org.team639.lib.Constants;
+import org.team639.robot.OI;
 import org.team639.robot.Robot;
 import org.team639.robot.Subsystems.DriveTrain;
 import static org.team639.lib.Constants.*;
@@ -17,8 +18,7 @@ public class JoystickDrive extends CommandBase
 {
     
     private DriveTrain driveTrain;
-    private XboxController controlXboxController;
-    private XboxController driveXboxController;
+
     private boolean aimBotEnabled;
     private double angleToBall;
     private double distanceToBall;
@@ -41,8 +41,6 @@ public class JoystickDrive extends CommandBase
     public JoystickDrive ()
     {
         driveTrain = Robot.getDriveTrain();
-        this.controlXboxController = Robot.getControlXboxController();
-        this.driveXboxController = Robot.getDrivingXboxController();
         addRequirements(driveTrain);
         aimBotEnabled = false;
         aimBotPID = new PID(Constants.autoDriveForwardP, Constants.autoDriveForwardI, Constants.autoDriveForwardD, 0.01, 1, 0.01, 0.25, 0);
@@ -76,26 +74,26 @@ public class JoystickDrive extends CommandBase
         double y = 0;
         double x = 0;
         if(officialControls) {
-            if(driveXboxController.getTriggerAxis(GenericHID.Hand.kRight) != 0) {
-                y = -driveXboxController.getY(GenericHID.Hand.kLeft) * manualSpeedModifier
-                        * clamp(.20, 1, 1 - driveXboxController.getTriggerAxis(GenericHID.Hand.kRight));
-                x = -driveXboxController.getX(GenericHID.Hand.kRight) * manualSpeedModifier
-                        * clamp(.20, 1, 1 - driveXboxController.getTriggerAxis(GenericHID.Hand.kRight));
+            if(OI.DriverController.getTriggerAxis(GenericHID.Hand.kRight) != 0) {
+                y = -OI.DriverController.getY(GenericHID.Hand.kLeft) * manualSpeedModifier
+                        * clamp(.20, 1, 1 - OI.DriverController.getTriggerAxis(GenericHID.Hand.kRight));
+                x = -OI.DriverController.getX(GenericHID.Hand.kRight) * manualSpeedModifier
+                        * clamp(.20, 1, 1 - OI.DriverController.getTriggerAxis(GenericHID.Hand.kRight));
             }
-            else if(driveXboxController.getTriggerAxis(GenericHID.Hand.kLeft) != 0)
+            else if(OI.DriverController.getTriggerAxis(GenericHID.Hand.kLeft) != 0)
             {
-                y = -driveXboxController.getY(GenericHID.Hand.kLeft)
-                        * (clamp(.6, 1, driveXboxController.getTriggerAxis(GenericHID.Hand.kLeft) + .6));
-                x = -driveXboxController.getX(GenericHID.Hand.kRight)
-                        * clamp(.6, 1, driveXboxController.getTriggerAxis(GenericHID.Hand.kLeft));
+                y = -OI.DriverController.getY(GenericHID.Hand.kLeft)
+                        * (clamp(.6, 1, OI.DriverController.getTriggerAxis(GenericHID.Hand.kLeft) + .6));
+                x = OI.DriverController.getX(GenericHID.Hand.kRight)
+                        * clamp(.6, 1, OI.DriverController.getTriggerAxis(GenericHID.Hand.kLeft));
             }
             else
             {
-                y = -driveXboxController.getY(GenericHID.Hand.kLeft) * manualSpeedModifier;
-                x = -driveXboxController.getX(GenericHID.Hand.kRight) * manualSpeedModifier;
+                y = -OI.DriverController.getY(GenericHID.Hand.kLeft) * manualSpeedModifier;
+                x = -OI.DriverController.getX(GenericHID.Hand.kRight) * manualSpeedModifier;
             }
 
-            if(driveXboxController.getY(GenericHID.Hand.kLeft) == 0) {
+            if(OI.DriverController.getY(GenericHID.Hand.kLeft) == 0) {
                 driveTrain.setSpeeds(y * (1 - stillXModifier) - x * stillXModifier, y * (1 - stillXModifier) + x * stillXModifier);
             }
             else
@@ -105,10 +103,10 @@ public class JoystickDrive extends CommandBase
         }
         else
         {
-            y = -driveXboxController.getY(GenericHID.Hand.kRight) * manualSpeedModifier
-                    * clamp(.20, 1, 1 - driveXboxController.getTriggerAxis(GenericHID.Hand.kRight));
-            x = -driveXboxController.getX(GenericHID.Hand.kLeft) * manualSpeedModifier
-                    * clamp(.20, 1, 1 - driveXboxController.getTriggerAxis(GenericHID.Hand.kRight));
+            y = -OI.DriverController.getY(GenericHID.Hand.kRight) * manualSpeedModifier
+                    * clamp(.20, 1, 1 - OI.DriverController.getTriggerAxis(GenericHID.Hand.kRight));
+            x = -OI.DriverController.getX(GenericHID.Hand.kLeft) * manualSpeedModifier
+                    * clamp(.20, 1, 1 - OI.DriverController.getTriggerAxis(GenericHID.Hand.kRight));
             if(y == 0) {
                 driveTrain.setSpeeds(y * (1 - stillXModifier) - x * stillXModifier, y * (1 - stillXModifier) + x * stillXModifier);
             }
