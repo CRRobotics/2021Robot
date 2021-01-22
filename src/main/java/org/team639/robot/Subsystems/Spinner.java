@@ -30,4 +30,5 @@ public class Spinner implements Subsystem {
     {
         return sensor.getRawColor();
     }
+
 }

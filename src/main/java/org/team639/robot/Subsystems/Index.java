@@ -15,6 +15,7 @@ public class Index extends SubsystemBase
     private final PhotoelectricSensor photo;
     private static Solenoid piston;
     private boolean manualOverride;
+    public static boolean sensorValue;
 
     private boolean auto;
     
@@ -49,6 +50,7 @@ public class Index extends SubsystemBase
     public void periodic()
     {
         System.out.println("Index sensor value: " + getSensorValue());
+        sensorValue = getSensorValue();
     }
 
     public void toggleAuto()

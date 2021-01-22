@@ -20,7 +20,7 @@ public class AutoIndexer extends CommandBase
 
     public void initialize()
     {
-        if (!indexer.isAuto() && indexer.getSensorValue()) { indexer.turnOn(); }
+        if (!indexer.isAuto() && Index.sensorValue) { indexer.setSpeed(-1); }
     }
 
     public void end(boolean interrupted)

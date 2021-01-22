@@ -1,9 +1,6 @@
 package org.team639.robot;
 
-import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.Filesystem;
-import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
@@ -68,8 +65,6 @@ public class Robot extends TimedRobot
     private static DataManager dataManager;
 
     private static double defaultAngle; // In degrees
-    
-
 
     //The path you want to use
     private String trajectoryJSON = "Pathweaver/output/snake.wpilib.json";
