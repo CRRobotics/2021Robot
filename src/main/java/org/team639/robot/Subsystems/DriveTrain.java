@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.team639.lib.Constants;
 import org.team639.lib.math.PID;
+import org.team639.lib.math.PIDF;
 
 public class DriveTrain implements Subsystem
 {
@@ -37,8 +38,10 @@ public class DriveTrain implements Subsystem
     SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV, Constants.kA);
     
     // p ~ 1.36
-    PIDController leftPIDController = new PIDController(.986, 0, 0);
-    PIDController rightPIDController = new PIDController(.986, 0, 0);
+    //PIDController leftPIDController = new PIDController(.986, 0, 0);
+    //PIDController rightPIDController = new PIDController(.986, 0, 0);
+    PIDController leftPIDController = new PIDController(0.986, 0, 0);
+    PIDController rightPIDController = new PIDController(0.986, 0, 0);
 
     /**
      * Returns the current wheel speeds of the robot.
@@ -76,6 +79,8 @@ public class DriveTrain implements Subsystem
     {
         initializeMotorControllers();
         transmissionSolenoid = new Solenoid(Constants.driveTrainsmissionSolenoidID);
+        leftMaster.getEncoder().setPosition(0.0);
+        rightMaster.getEncoder().setPosition(0.0);
     }
     
     private void initializeMotorControllers()
@@ -116,12 +121,27 @@ public class DriveTrain implements Subsystem
         rightServant.setIdleMode(CANSparkMax.IdleMode.kBrake);
         
     }
-    
+
+    public void resetOdometry(Pose2d pose)
+    {
+        rightMaster.getEncoder().setPosition(0);
+        leftMaster.getEncoder().setPosition(0);
+        odometry.resetPosition(pose, Rotation2d.fromDegrees(-gyro.getAngle()));
+    }
+
+    public void resetEncoders()
+    {
+        leftMaster.getEncoder();
+
+    }
+
     public void periodic()
     {
-        pose = odometry.update(getHeading(), getSpeeds().leftMetersPerSecond, getSpeeds().rightMetersPerSecond);
+        odometry.update(getHeading(), getSpeeds().leftMetersPerSecond, getSpeeds().rightMetersPerSecond);
         SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());
         System.out.print("Pose2D:" + getPose());
+        SmartDashboard.putNumber("Left Encoder: ", -leftMaster.getEncoder().getVelocity());
+        SmartDashboard.putNumber("Right Encoder: ", rightMaster.getEncoder().getVelocity());
 
     }
     
@@ -146,7 +166,8 @@ public class DriveTrain implements Subsystem
     
     public Pose2d getPose()
     {
-        return pose;
+        //return pose;
+        return odometry.getPoseMeters();
     }
     
     public PIDController getLeftPIDController()
@@ -224,8 +245,7 @@ public class DriveTrain implements Subsystem
      */
     public CANEncoder[] getEncoders()
     {
-        //return new CANEncoder[] {leftMaster.getEncoder(), rightMaster.getEncoder()};
-        return null;
+        return new CANEncoder[] {leftMaster.getEncoder(), rightMaster.getEncoder()};
     }
     
     /**

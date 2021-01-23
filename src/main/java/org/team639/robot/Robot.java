@@ -244,7 +244,7 @@ public class Robot extends TimedRobot
                 driveTrain::setVoltages,
                 driveTrain
                 );
-
+        driveTrain.resetOdometry(meter.getInitialPose());
         return ramseteCommand;
     }
     
