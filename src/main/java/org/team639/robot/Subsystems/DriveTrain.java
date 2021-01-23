@@ -200,7 +200,7 @@ public class DriveTrain implements Subsystem
      */
     public void setVoltages(double leftVoltage, double rightVoltage)
     {
-        //leftMaster.setVoltage(leftVoltage / 12.0); rightMaster.setVoltage(rightVoltage / 12.0);
+        leftMaster.setVoltage(leftVoltage); rightMaster.setVoltage(rightVoltage);
         SmartDashboard.putNumber("Left Voltage", leftVoltage);
         SmartDashboard.putNumber("Right Voltage", rightVoltage);
     }
