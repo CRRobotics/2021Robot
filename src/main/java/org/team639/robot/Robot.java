@@ -22,6 +22,7 @@ import org.team639.robot.Commands.Acquisition.ToggleAcquisitionPistons;
 import org.team639.robot.Commands.Climbing.JoystickClimb;
 import org.team639.robot.Commands.Climbing.ToggleClimbingControls;
 import org.team639.robot.Commands.Drivetrain.*;
+import org.team639.robot.Commands.Indexer.AutoIndexer;
 import org.team639.robot.Commands.Indexer.ToggleIndexAuto;
 import org.team639.robot.Commands.Indexer.TriggerIndexer;
 import org.team639.robot.Commands.Shooter.Shoot;
@@ -63,7 +64,6 @@ public class Robot extends TimedRobot
     public static boolean climbingJoysticksEnabled = false;
     private static Spinner spinner;
     private static DataManager dataManager;
-
     private static double defaultAngle; // In degrees
 
     //The path you want to use
@@ -108,7 +108,7 @@ public class Robot extends TimedRobot
 
         CommandScheduler.getInstance().setDefaultCommand(driveTrain, new JoystickDrive());
         CommandScheduler.getInstance().setDefaultCommand(acquisition, new ManualAcquisition());
-        CommandScheduler.getInstance().setDefaultCommand(indexer, new TriggerIndexer());
+        CommandScheduler.getInstance().setDefaultCommand(indexer, new AutoIndexer());
         CommandScheduler.getInstance().setDefaultCommand(climbing, new JoystickClimb());
     }
     
@@ -142,6 +142,8 @@ public class Robot extends TimedRobot
         OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
         OI.ControlButtonA.whenPressed(new Shoot());
         OI.ControlButtonB.whenPressed(new ToggleShooterPistons());
+        OI.ControlDPadUp.whenHeld(new TriggerIndexer(1));
+        OI.ControlDPadDown.whenHeld(new TriggerIndexer(-1));
     }
 
     /**
@@ -217,48 +219,26 @@ public class Robot extends TimedRobot
                         .setKinematics(DriveConstants.kDriveKinematics)
                         .addConstraint(autoVoltageConstraint);
 
-        //Generates a trajectory. Starts at 0,0 -> 1,1 -> 2,-1. This should draw an S pattern. Ends 3 Meters ahead
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
+
+        Trajectory meter = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
                 List.of(
-                        new Translation2d(1, 1),
-                        new Translation2d(2, -1)
+                        new Translation2d(1, 0)
                 ),
-                new Pose2d(3, 0, new Rotation2d(0)),
+                new Pose2d(1, 0, new Rotation2d(0)),
                 config
         );
 
 
-        //BOX BUG
-        Trajectory boxBug = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0,0, new Rotation2d(0)),
-                List.of(
-                        new Translation2d(2,0),
-                        new Translation2d(2,2),
-                        new Translation2d(0,2),
-                        new Translation2d(0,0),
-                        new Translation2d(2,0),
-                        new Translation2d(2,2),
-                        new Translation2d(0,2),
-                        new Translation2d(0,0),
-                        new Translation2d(2,0),
-                        new Translation2d(2,2),
-                        new Translation2d(0,2),
-                        new Translation2d(0,0)
-                ),
-                new Pose2d(0,0, new Rotation2d(0)),
-                config
-        );
-
-        Trajectory pathweaverTest = loadConfig(trajectoryJSON);
+        //Trajectory pathweaverTest = loadConfig(trajectoryJSON);
 
         RamseteCommand ramseteCommand = new RamseteCommand(
-                pathweaverTest,
+                meter,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
                 driveTrain.getKinematics(),
-                driveTrain::getWheelSpeeds,
+                driveTrain::getSpeeds,
                 driveTrain.getLeftPIDController(),
                 driveTrain.getRightPIDController(),
                 driveTrain::setVoltages,
@@ -281,7 +261,7 @@ public class Robot extends TimedRobot
     @Override
     public void robotPeriodic()
     {
-    
+
     }
     
     /**

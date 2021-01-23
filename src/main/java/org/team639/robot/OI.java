@@ -27,17 +27,17 @@ public class OI
     public static JoystickButton DriverLeftBumper = new JoystickButton(DriverController, XboxController.Button.kBumperLeft.value);
 
     //Controller XBOX Controller
-    public static DPadButton ControlDPadUp = new DPadButton(DriverController, 0);
-    public static DPadButton ControlDPadRight = new DPadButton(DriverController, 90);
-    public static DPadButton ControlDPadDown = new DPadButton(DriverController, 180);
-    public static DPadButton ControlDPadLeft = new DPadButton(DriverController, 270);
+    public static DPadButton ControlDPadUp = new DPadButton(ControlController, 0);
+    public static DPadButton ControlDPadRight = new DPadButton(ControlController, 90);
+    public static DPadButton ControlDPadDown = new DPadButton(ControlController, 180);
+    public static DPadButton ControlDPadLeft = new DPadButton(ControlController, 270);
 
-    public static JoystickButton ControlButtonY = new JoystickButton(DriverController, XboxController.Button.kY.value);
-    public static JoystickButton ControlButtonX = new JoystickButton(DriverController, XboxController.Button.kX.value);
-    public static JoystickButton ControlButtonA = new JoystickButton(DriverController, XboxController.Button.kA.value);
-    public static JoystickButton ControlButtonB = new JoystickButton(DriverController, XboxController.Button.kB.value);
+    public static JoystickButton ControlButtonY = new JoystickButton(ControlController, XboxController.Button.kY.value);
+    public static JoystickButton ControlButtonX = new JoystickButton(ControlController, XboxController.Button.kX.value);
+    public static JoystickButton ControlButtonA = new JoystickButton(ControlController, XboxController.Button.kA.value);
+    public static JoystickButton ControlButtonB = new JoystickButton(ControlController, XboxController.Button.kB.value);
 
-    public static JoystickButton ControlRightBumper = new JoystickButton(DriverController, XboxController.Button.kBumperRight.value);
-    public static JoystickButton ControlLeftBumper = new JoystickButton(DriverController, XboxController.Button.kBumperLeft.value);
+    public static JoystickButton ControlRightBumper = new JoystickButton(ControlController, XboxController.Button.kBumperRight.value);
+    public static JoystickButton ControlLeftBumper = new JoystickButton(ControlController, XboxController.Button.kBumperLeft.value);
 
 }

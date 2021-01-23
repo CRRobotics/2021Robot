@@ -119,15 +119,17 @@ public class DriveTrain implements Subsystem
     
     public void periodic()
     {
-        //pose = odometry.update(getHeading(), getSpeeds().leftMetersPerSecond, getSpeeds().rightMetersPerSecond);
+        pose = odometry.update(getHeading(), getSpeeds().leftMetersPerSecond, getSpeeds().rightMetersPerSecond);
         SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());
+        System.out.print("Pose2D:" + getPose());
+
     }
     
     /**
      * Returns the speeds of the motors stored in a DifferentialDriveWheelSpeeds (in meters/s).
      * @return The speeds of the motors stored in a DifferentialDriveWheelSpeeds (in meters/s).
      */
-    /*
+
     public DifferentialDriveWheelSpeeds getSpeeds()
     {
         return new DifferentialDriveWheelSpeeds(
@@ -135,7 +137,7 @@ public class DriveTrain implements Subsystem
                 rightMaster.getEncoder().getVelocity() * Constants.inchesToEncoderUnitsScaled / 60
         );
     }
-    */
+
     
     public DifferentialDriveKinematics getKinematics()
     {
