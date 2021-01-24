@@ -38,7 +38,7 @@ public class Constants
     public static final double shortShootingPositionDistance = 1.5;
     public static final double longShootingPositionDistance = 7;
     
-    public static final double chassisWidth = Units.inchesToMeters(21.5);
+    public static final double chassisWidth = .61;
     
     public static final double angleToTurning = 0.4;
     

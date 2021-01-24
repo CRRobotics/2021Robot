@@ -63,7 +63,7 @@ public class Robot extends TimedRobot
     private static Climbing climbing = new Climbing();
 
     public static boolean climbingJoysticksEnabled = false;
-    private static Spinner spinner;
+    private static Spinner spinner = new Spinner();
     private static DataManager dataManager;
     private static double defaultAngle; // In degrees
 
@@ -106,11 +106,13 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().registerSubsystem(shooter);
         CommandScheduler.getInstance().registerSubsystem(climbing);
         CommandScheduler.getInstance().registerSubsystem(dataManager);
+        CommandScheduler.getInstance().registerSubsystem(spinner);
 
         CommandScheduler.getInstance().setDefaultCommand(driveTrain, new JoystickDrive());
         CommandScheduler.getInstance().setDefaultCommand(acquisition, new ManualAcquisition());
-        CommandScheduler.getInstance().setDefaultCommand(indexer, new AutoIndexer());
+        //CommandScheduler.getInstance().setDefaultCommand(indexer, new AutoIndexer());
         CommandScheduler.getInstance().setDefaultCommand(climbing, new JoystickClimb());
+        //CommandScheduler.getInstance().setDefaultCommand(spinner, new JoystickSpinner());
     }
     
     /**
@@ -139,6 +141,8 @@ public class Robot extends TimedRobot
 
         //Controller Settings
         OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
+        OI.ControlLeftBumper.whenHeld(new JoystickSpinner());
+
         OI.ControlButtonY.whenPressed(new ShootMaxSpeed());
         OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
         OI.ControlButtonA.whenPressed(new Shoot());
@@ -247,13 +251,16 @@ public class Robot extends TimedRobot
                 driveTrain
                 );
         driveTrain.resetOdometry(meter.getInitialPose());
-        //return ramseteCommand;
+        return ramseteCommand;
+        /*
 
         return new MoveRotateChain(new Command[]
                 {
                         new DriveWithAcquistionAuto(1.5),
                         new Shoot()
                 });
+
+         */
     }
     
 

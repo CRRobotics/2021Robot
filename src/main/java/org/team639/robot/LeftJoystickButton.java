@@ -19,8 +19,8 @@ public class LeftJoystickButton extends Button
     {
         value = joystick.getY(GenericHID.Hand.kLeft);
         if(isUp == true)
-            return(value > 0.5);
+            return(value > 0.1);
         else
-            return(value < -.5);
+            return(value < -.1);
     }
 }
