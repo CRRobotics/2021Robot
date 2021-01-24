@@ -40,4 +40,7 @@ public class OI
     public static JoystickButton ControlRightBumper = new JoystickButton(ControlController, XboxController.Button.kBumperRight.value);
     public static JoystickButton ControlLeftBumper = new JoystickButton(ControlController, XboxController.Button.kBumperLeft.value);
 
+    public static LeftJoystickButton ControlLeftStickUp = new LeftJoystickButton(ControlController, true);
+    public static LeftJoystickButton ControlLeftStickDown = new LeftJoystickButton(ControlController, false);
+
 }

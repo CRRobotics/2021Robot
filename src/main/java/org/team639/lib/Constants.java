@@ -6,12 +6,13 @@ public class Constants
 {
     // DriveTrain
     public static final double inchesToRotations = 1.0 / (Units.inchesToMeters(6.0) * 3.14159265); // Inches to rotations conversion, diameter = 6 inches
-    public static final double rotationsToEncoderUnits = 42.0;
+    public static final double rotationsToEncoderUnits = 32.0;
     public static final double driveTrainGearRatio = (10.0/33.0) * (1/2.13) * 1 / .75;
     public static final double inchesToEncoderUnitsScaled = inchesToRotations * rotationsToEncoderUnits * driveTrainGearRatio;
     public static final double metersToInches = 39.37;
     public static final double metersToEncoderUnitsScaled = metersToInches * inchesToEncoderUnitsScaled;
-    
+    public static final double metersToRotations = .4747;
+
     public static final double manualSpeedModifier = .6;
     
     public static final double movingXModifier = .35;

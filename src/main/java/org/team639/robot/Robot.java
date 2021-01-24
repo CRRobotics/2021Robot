@@ -16,6 +16,7 @@ import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConst
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.team639.robot.Commands.Acquisition.ManualAcquisition;
 import org.team639.robot.Commands.Acquisition.ToggleAcquisitionPistons;
@@ -142,8 +143,8 @@ public class Robot extends TimedRobot
         OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
         OI.ControlButtonA.whenPressed(new Shoot());
         OI.ControlButtonB.whenPressed(new ToggleShooterPistons());
-        OI.ControlDPadUp.whenHeld(new TriggerIndexer(1));
-        OI.ControlDPadDown.whenHeld(new TriggerIndexer(-1));
+        OI.ControlLeftStickUp.whenHeld(new TriggerIndexer(1));
+        OI.ControlLeftStickDown.whenHeld(new TriggerIndexer(-1));
     }
 
     /**
@@ -204,6 +205,7 @@ public class Robot extends TimedRobot
 
          */
 
+
         var autoVoltageConstraint =
                 new DifferentialDriveVoltageConstraint(
                         new SimpleMotorFeedforward(DriveConstants.ksVolts,
@@ -245,7 +247,13 @@ public class Robot extends TimedRobot
                 driveTrain
                 );
         driveTrain.resetOdometry(meter.getInitialPose());
-        return ramseteCommand;
+        //return ramseteCommand;
+
+        return new MoveRotateChain(new Command[]
+                {
+                        new DriveWithAcquistionAuto(1.5),
+                        new Shoot()
+                });
     }
     
 

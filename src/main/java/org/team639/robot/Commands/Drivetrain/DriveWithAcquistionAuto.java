@@ -1,15 +1,14 @@
 package org.team639.robot.Commands.Drivetrain;
 
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import org.team639.lib.Constants;
 import org.team639.lib.math.PID;
 import org.team639.robot.Robot;
 import org.team639.robot.Subsystems.Acquisition;
 import org.team639.robot.Subsystems.DriveTrain;
-import org.team639.lib.Constants;
 import org.team639.robot.Subsystems.Index;
 
-public class AutoDriveForwardWhileAcquisitionRunning extends CommandBase
+public class DriveWithAcquistionAuto extends CommandBase
 {
 
     private boolean done;
@@ -41,20 +40,17 @@ public class AutoDriveForwardWhileAcquisitionRunning extends CommandBase
      * Initializes the command
      * @param distance The distance to travel in meters
      */
-    public AutoDriveForwardWhileAcquisitionRunning(double distance) {
+    public DriveWithAcquistionAuto(double distance) {
         negative = distance < 0;
         driveTrain = Robot.getDriveTrain();
         indexer = Robot.getIndexer();
         acquisition = Robot.getAcquisition();
+
         addRequirements(driveTrain);
-        addRequirements(indexer);
-        addRequirements(acquisition);
         targetMeters = distance;
         targetRotations = targetMeters * Constants.inchesToRotations;
         targetEncoderUnits = targetRotations * Constants.rotationsToEncoderUnits;
         targetEncoderUnits *= Constants.driveTrainGearRatio;
-        System.out.println("AutoDriveForward Constructed: " + distance);
-
     }
 
     /**
@@ -66,12 +62,13 @@ public class AutoDriveForwardWhileAcquisitionRunning extends CommandBase
         initialEncoderPositions = driveTrain.getPositions();
         targetEncoderPositionLeft = targetEncoderUnits + driveTrain.getPositions()[0];
         targetEncoderPositionRight = targetEncoderUnits + driveTrain.getPositions()[1];
-        pid = new PID(Constants.autoDriveForwardP, Constants.autoDriveForwardI, Constants.autoDriveForwardD, 0.01, 1, 0.01, 0.25, 0);
+        pid = new PID(Constants.autoDriveForwardP, Constants.autoDriveForwardI, Constants.autoDriveForwardD,
+                0.01, .5, 0.01, 0.25, 0);
         indexer.turnOn();
         indexer.extendPistons();
         Robot.getAcquisitionPistons().moveDown();
-        acquisition.runAcquisition();
-        System.out.println("AutoDriveForwardWhileAcquisitionRunning Initialized: " + targetMeters);
+
+        System.out.println("Driving " + targetMeters + " meters");
     }
 
     /**
@@ -80,6 +77,7 @@ public class AutoDriveForwardWhileAcquisitionRunning extends CommandBase
      */
     public void execute()
     {
+        acquisition.runAcquisition();
         double[] positions = driveTrain.getPositions();
         double leftEncoderPosition = positions[0];
         double rightEncoderPosition = positions[1];
@@ -87,20 +85,17 @@ public class AutoDriveForwardWhileAcquisitionRunning extends CommandBase
         rightEncoderDiff = targetEncoderPositionRight - rightEncoderPosition;
         double average = pid.compute((leftEncoderDiff + rightEncoderDiff) / 2.0);
         driveTrain.setSpeeds(average, average);
-        done = targetRotations < 0 || (!negative && (average <= 0 || leftEncoderDiff >= 0 || rightEncoderDiff >= 0)
-                || (negative && (average >= 0|| leftEncoderDiff <= 0 || rightEncoderDiff <= 0)));
-
+        System.out.println("RightEncoderPosition: " + rightEncoderPosition);
+        System.out.println("LeftEncoderPosition: " + leftEncoderPosition);
+        System.out.println("Average: " + average);
+        done = ((!negative && (targetRotations < 0 || average <= 0))
+                || (!negative && (targetRotations < 0 || average <= 0)));
         if(done)
         {
+            System.out.println("AutoDriveForward Headed out");
             indexer.turnOff();
             acquisition.stopAcquisition();
         }
-
-        SmartDashboard.putNumber("leftEncoderDiff", leftEncoderDiff);
-        SmartDashboard.putNumber("rightEncoderDiff", rightEncoderDiff);
-        SmartDashboard.putNumber("targetEncoderPositionLeft", targetEncoderPositionLeft);
-        SmartDashboard.putNumber("targetEncoderPositionRight", targetEncoderPositionRight);
-
     }
 
     /**

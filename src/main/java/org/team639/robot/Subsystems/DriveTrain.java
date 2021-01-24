@@ -153,8 +153,8 @@ public class DriveTrain implements Subsystem
     public DifferentialDriveWheelSpeeds getSpeeds()
     {
         return new DifferentialDriveWheelSpeeds(
-                leftMaster.getEncoder().getVelocity() * Constants.inchesToEncoderUnitsScaled / 60,
-                rightMaster.getEncoder().getVelocity() * Constants.inchesToEncoderUnitsScaled / 60
+                leftMaster.getEncoder().getVelocity() * Constants.metersToEncoderUnitsScaled / 60,
+                rightMaster.getEncoder().getVelocity() * Constants.metersToEncoderUnitsScaled / 60
         );
     }
 
