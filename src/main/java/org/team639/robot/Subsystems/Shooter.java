@@ -4,6 +4,7 @@ import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.team639.lib.Constants;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -43,6 +44,10 @@ public class Shooter implements Subsystem
 
         maxSpeed = false;
 
+    }
+    public void periodic()
+    {
+        SmartDashboard.putNumber("MotorRPM",mainMotor.getEncoder().getVelocity());
     }
 
     public void toggleMaxSpeed()

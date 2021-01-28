@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.team639.lib.Constants;
 import org.team639.lib.math.PID;
@@ -41,8 +42,8 @@ public class DriveTrain implements Subsystem
     // p ~ 1.36
     //PIDController leftPIDController = new PIDController(.986, 0, 0);
     //PIDController rightPIDController = new PIDController(.986, 0, 0);
-    PIDController leftPIDController = new PIDController(0.986, 0, 0);
-    PIDController rightPIDController = new PIDController(0.986, 0, 0);
+    PIDController leftPIDController = new PIDController(.0005, 0, 0);
+    PIDController rightPIDController = new PIDController(0.0005, 0, 0);
 
     /**
      * Returns the current wheel speeds of the robot.
@@ -93,7 +94,11 @@ public class DriveTrain implements Subsystem
         rightMaster = new CANSparkMax(Constants.rightSparkMasterID, CANSparkMaxLowLevel.MotorType.kBrushless);
         leftServant = new CANSparkMax(Constants.leftSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
         rightServant = new CANSparkMax(Constants.rightSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
-    
+
+        //leftMaster.getEncoder().setPositionConversionFactor(Constants.driveTrainGearRatio * (6*Math.PI));
+        //rightMaster.getEncoder().setPositionConversionFactor(Constants.driveTrainGearRatio * (6*Math.PI));
+
+
         leftMaster.restoreFactoryDefaults();
         rightMaster.restoreFactoryDefaults();
         leftServant.restoreFactoryDefaults();
@@ -111,6 +116,7 @@ public class DriveTrain implements Subsystem
         //rightServant.setInverted(true);
         
         leftMaster.setInverted(true);
+        leftServant.setInverted(true);
         //rightMaster.setInverted(true);
     
         rightServant.follow(rightMaster);
@@ -123,11 +129,11 @@ public class DriveTrain implements Subsystem
         
     }
 
-    public void resetOdometry(Pose2d pose)
+    public void resetOdometry()
     {
         rightMaster.getEncoder().setPosition(0);
         leftMaster.getEncoder().setPosition(0);
-        odometry.resetPosition(pose, Rotation2d.fromDegrees(-gyro.getAngle()));
+        odometry.resetPosition(startPosition, Rotation2d.fromDegrees(-gyro.getAngle()));
     }
 
     public void resetEncoders()
@@ -138,14 +144,23 @@ public class DriveTrain implements Subsystem
 
     public void periodic()
     {
-        odometry.update(getHeading(), getSpeeds().leftMetersPerSecond, getSpeeds().rightMetersPerSecond);
+        odometry.update(getHeading(), getLeftPostion(), getRightPostion());
         SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());
         System.out.print("Pose2D:" + getPose());
-        SmartDashboard.putNumber("Left Encoder: ", leftMaster.getEncoder().getVelocity());
-        SmartDashboard.putNumber("Right Encoder: ", rightMaster.getEncoder().getVelocity());
+        SmartDashboard.putNumber("Left Encoder: ", getLeftPostion());
+        SmartDashboard.putNumber("Right Encoder: ", getRightPostion());
 
     }
-    
+
+    public double getLeftPostion()
+    {
+        return leftMaster.getEncoder().getPosition() * Constants.driveTrainGearRatio * (Units.inchesToMeters(6)*Math.PI);
+    }
+
+    public double getRightPostion()
+    {
+        return rightMaster.getEncoder().getPosition() * Constants.driveTrainGearRatio * (Units.inchesToMeters(6)*Math.PI);
+    }
     /**
      * Returns the speeds of the motors stored in a DifferentialDriveWheelSpeeds (in meters/s).
      * @return The speeds of the motors stored in a DifferentialDriveWheelSpeeds (in meters/s).

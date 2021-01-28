@@ -91,7 +91,8 @@ public class Robot extends TimedRobot
         
         setUpXboxController();
         setUpCommands();
-        
+
+        driveTrain.resetOdometry();
         dataManager.disableUpperRingLight();
     }
     
@@ -235,11 +236,25 @@ public class Robot extends TimedRobot
                 config
         );
 
+        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
+                // Start at the origin facing the +X direction
+                new Pose2d(0, 0, new Rotation2d(0)),
+                // Pass through these two interior waypoints, making an 's' curve path
+                List.of(
+                        new Translation2d(1, 1),
+                        new Translation2d(2, -1)
+                ),
+                // End 3 meters straight ahead of where we started, facing forward
+                new Pose2d(3, 0, new Rotation2d(0)),
+                // Pass config
+                config
+        );
+
 
         //Trajectory pathweaverTest = loadConfig(trajectoryJSON);
 
         RamseteCommand ramseteCommand = new RamseteCommand(
-                meter,
+                exampleTrajectory,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -250,7 +265,7 @@ public class Robot extends TimedRobot
                 driveTrain::setVoltages,
                 driveTrain
                 );
-        driveTrain.resetOdometry(meter.getInitialPose());
+        driveTrain.resetOdometry();
         return ramseteCommand;
         /*
 
@@ -276,6 +291,9 @@ public class Robot extends TimedRobot
     @Override
     public void robotPeriodic()
     {
+
+        SmartDashboard.putString("PoseX", driveTrain.getPose().toString());
+        SmartDashboard.putNumberArray("EncoderVal", driveTrain.getPositions());
 
     }
     
