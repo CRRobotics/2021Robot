@@ -17,6 +17,12 @@ public class Shooter implements Subsystem
     
     private CANSparkMax mainMotor;
     private CANSparkMax secondMotor;
+
+    //1.0: 5500 RPM
+    //0.8: 4500 RPM
+    //0.6: 3400 RPM
+    //0.4: 2200 RPM
+    //0.2: 1000 RPM
     private static final double overallPower = 0.8;
 
     private boolean maxSpeed;
@@ -34,7 +40,7 @@ public class Shooter implements Subsystem
         secondMotor = new CANSparkMax(Constants.shooterSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
         
         mainMotor.restoreFactoryDefaults(); secondMotor.restoreFactoryDefaults();
-        
+
         //secondMotor.follow(mainMotor);
         //secondMotor.setInverted(true);
         secondMotor.setInverted(true);
@@ -45,9 +51,11 @@ public class Shooter implements Subsystem
         maxSpeed = false;
 
     }
+
     public void periodic()
     {
-        SmartDashboard.putNumber("MotorRPM",mainMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("MainMotorRPM", mainMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("SecondaryMotorRPM", secondMotor.getEncoder().getVelocity());
     }
 
     public void toggleMaxSpeed()

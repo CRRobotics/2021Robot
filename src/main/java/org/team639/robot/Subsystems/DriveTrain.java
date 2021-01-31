@@ -42,8 +42,10 @@ public class DriveTrain implements Subsystem
     // p ~ 1.36
     //PIDController leftPIDController = new PIDController(.986, 0, 0);
     //PIDController rightPIDController = new PIDController(.986, 0, 0);
-    PIDController leftPIDController = new PIDController(.0005, 0, 0);
-    PIDController rightPIDController = new PIDController(0.0005, 0, 0);
+
+    //TODO: Try configuring different PID values for more consistent results
+    PIDController leftPIDController = new PIDController(.0005, 0, .0001);
+    PIDController rightPIDController = new PIDController(0.0005, 0, .0001);
 
     /**
      * Returns the current wheel speeds of the robot.
@@ -133,6 +135,7 @@ public class DriveTrain implements Subsystem
     {
         rightMaster.getEncoder().setPosition(0);
         leftMaster.getEncoder().setPosition(0);
+        gyro.reset();
         odometry.resetPosition(startPosition, Rotation2d.fromDegrees(-gyro.getAngle()));
     }
 

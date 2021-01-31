@@ -28,6 +28,7 @@ import org.team639.robot.Commands.Indexer.ToggleIndexAuto;
 import org.team639.robot.Commands.Indexer.TriggerIndexer;
 import org.team639.robot.Commands.Shooter.Shoot;
 import org.team639.robot.Commands.Shooter.ShootMaxSpeed;
+import org.team639.robot.Commands.Shooter.ShotTest;
 import org.team639.robot.Commands.Shooter.ToggleShooterPistons;
 import org.team639.robot.Commands.Spinner.JoystickSpinner;
 import org.team639.robot.Subsystems.*;
@@ -147,6 +148,7 @@ public class Robot extends TimedRobot
         OI.ControlButtonY.whenPressed(new ShootMaxSpeed());
         OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
         OI.ControlButtonA.whenPressed(new Shoot());
+        //OI.ControlButtonA.whenHeld(new ShotTest());
         OI.ControlButtonB.whenPressed(new ToggleShooterPistons());
         OI.ControlLeftStickUp.whenHeld(new TriggerIndexer(1));
         OI.ControlLeftStickDown.whenHeld(new TriggerIndexer(-1));
@@ -254,7 +256,7 @@ public class Robot extends TimedRobot
         //Trajectory pathweaverTest = loadConfig(trajectoryJSON);
 
         RamseteCommand ramseteCommand = new RamseteCommand(
-                exampleTrajectory,
+                meter,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
