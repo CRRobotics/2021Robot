@@ -15,9 +15,11 @@ import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.team639.robot.Commands.Acquisition.ManualAcquisition;
+import org.team639.robot.Commands.Acquisition.RunAcquisitionForTime;
 import org.team639.robot.Commands.Acquisition.ToggleAcquisitionPistons;
 import org.team639.robot.Commands.Climbing.JoystickClimb;
 import org.team639.robot.Commands.Climbing.ToggleClimbingControls;
@@ -49,7 +51,7 @@ public class Robot extends TimedRobot
     private static final String kDefaultAuto = "Default";
     private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
-    private final SendableChooser<String> m_chooser = new SendableChooser<>();
+    private final SendableChooser<AutoTypes> m_chooser = new SendableChooser<AutoTypes>();
     
     private static DriveTrain driveTrain = new DriveTrain();;
     private static Acquisition acquisition = new Acquisition();
@@ -82,8 +84,6 @@ public class Robot extends TimedRobot
     @Override
     public void robotInit()
     {
-        m_chooser.setDefaultOption("Default Auto", kDefaultAuto);
-        m_chooser.addOption("My Auto", kCustomAuto);
 
         dataManager = new DataManager();
         defaultAngle = driveTrain.getHeading().getDegrees();
@@ -92,6 +92,7 @@ public class Robot extends TimedRobot
         setUpCommands();
         
         dataManager.disableUpperRingLight();
+        SmartDashboard.putData(m_chooser);
     }
     
     /**
@@ -161,6 +162,13 @@ public class Robot extends TimedRobot
         return null;
     }
 
+    public enum AutoTypes
+    {
+        METER,
+        SNAKE,
+        ACQAUTO
+    }
+
     /**
      * Returns autonomous command to use
      * @return command to be used for autonomous
@@ -228,6 +236,15 @@ public class Robot extends TimedRobot
                 config
         );
 
+        Trajectory meter = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(0, 0, new Rotation2d(0)),
+                List.of(
+                        new Translation2d(1, 0)
+                ),
+                new Pose2d(1, 0, new Rotation2d(0)),
+                config
+        );
+
 
         //BOX BUG
         Trajectory boxBug = TrajectoryGenerator.generateTrajectory(
@@ -252,8 +269,8 @@ public class Robot extends TimedRobot
 
         Trajectory pathweaverTest = loadConfig(trajectoryJSON);
 
-        RamseteCommand ramseteCommand = new RamseteCommand(
-                pathweaverTest,
+        RamseteCommand OneMeter = new RamseteCommand(
+                meter,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -265,7 +282,36 @@ public class Robot extends TimedRobot
                 driveTrain
                 );
 
-        return ramseteCommand;
+        RamseteCommand snake = new RamseteCommand(
+                pathweaverTest,
+                driveTrain::getPose,
+                new RamseteController(2.0, 0.7),
+                driveTrain.getFeedForward(),
+                driveTrain.getKinematics(),
+                driveTrain::getWheelSpeeds,
+                driveTrain.getLeftPIDController(),
+                driveTrain.getRightPIDController(),
+                driveTrain::setVoltages,
+                driveTrain
+        );
+
+        ParallelRaceGroup acquisitionAuto = new ParallelRaceGroup(
+                OneMeter,
+                new RunAcquisitionForTime(999999)
+        );
+
+        switch(m_chooser.getSelected())
+        {
+            case METER:
+                return OneMeter;
+            case SNAKE:
+                return snake;
+            case ACQAUTO:
+                return acquisitionAuto;
+            default:
+                return OneMeter;
+        }
+
     }
     
 
@@ -298,9 +344,7 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousInit()
     {
-        m_autoSelected = m_chooser.getSelected();
-        m_autoSelected = SmartDashboard.getString("Auto Selector", kDefaultAuto);
-        System.out.println("Auto selected: " + m_autoSelected);
+        System.out.println("Auto selected: " + m_chooser.getSelected());
         CommandScheduler.getInstance().cancelAll();
         getAutonomousCommand().schedule();
     }
