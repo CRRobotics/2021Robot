@@ -1,6 +1,7 @@
 package org.team639.robot.Subsystems;
 
 import edu.wpi.first.wpilibj.Solenoid;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
@@ -49,7 +50,7 @@ public class Index extends SubsystemBase
 
     public void periodic()
     {
-        System.out.println("Index sensor value: " + getSensorValue());
+        SmartDashboard.putBoolean("Index sensor value: ",getSensorValue());
         sensorValue = getSensorValue();
     }
 

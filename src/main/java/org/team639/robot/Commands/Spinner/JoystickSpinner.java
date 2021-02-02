@@ -19,28 +19,16 @@ public class JoystickSpinner extends CommandBase
     }
     
     @Override
-    public void execute()
+    public void initialize()
     {
         if(!Robot.climbingJoysticksEnabled)
         {
-            if (OI.ControlController.getBumper(GenericHID.Hand.kRight))
-            {
                 spinner.setMotorSpeed(0.5);
-            }
-            if (OI.ControlController.getBumperReleased(GenericHID.Hand.kRight))
-            {
-                end();
-            }
         }
     }
-    public void end()
+    public void end(boolean interrupted)
     {
         spinner.setMotorSpeed(0);
     }
 
-    @Override
-    public boolean isFinished()
-    {
-        return false;
-    }
 }

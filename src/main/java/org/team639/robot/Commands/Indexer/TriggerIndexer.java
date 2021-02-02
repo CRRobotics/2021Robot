@@ -11,33 +11,24 @@ public class TriggerIndexer extends CommandBase
 {
 
     private Index indexer;
+    double speed;
     
-    public TriggerIndexer()
+    public TriggerIndexer(double speed)
     {
         indexer = Robot.getIndexer();
         addRequirements(indexer);
+        this.speed = speed;
     }
-    
-    public void execute()
+
+    public void initialize()
     {
-        if(!indexer.isAuto() && !Robot.climbingJoysticksEnabled) {
-            if (OI.ControlController.getTriggerAxis(GenericHID.Hand.kRight) > Constants.triggerInputThreshold) {
-                indexer.turnOn();
-            } else {
-                indexer.setSpeed(OI.ControlController.getY(GenericHID.Hand.kLeft));
-            }
-        }
-        else
-        {
-            if(indexer.getSensorValue())
-            {
-                indexer.setSpeed(.5);
-            }
-            else
-            {
-                indexer.turnOff();
-            }
-        }
+        if(!Robot.climbingJoysticksEnabled)
+            indexer.setSpeed(speed);
     }
+    public void end(boolean interrupted)
+    {
+        indexer.setSpeed(0);
+    }
+
     
 }

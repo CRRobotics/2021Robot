@@ -15,9 +15,12 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.util.Units;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.team639.lib.Constants;
 import org.team639.lib.math.PID;
+import org.team639.lib.math.PIDF;
+import org.team639.robot.DriveConstants;
 
 public class DriveTrain implements Subsystem
 {
@@ -34,11 +37,15 @@ public class DriveTrain implements Subsystem
     private Pose2d pose = startPosition;
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.chassisWidth);
     DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getHeading());
-    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(Constants.kS, Constants.kV, Constants.kA);
+    SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(DriveConstants.ksVolts, DriveConstants.kvVoltSecondsSquareMeter, DriveConstants.kaVoltSecondsSquaredPerMeter);
     
     // p ~ 1.36
-    PIDController leftPIDController = new PIDController(.986, 0, 0);
-    PIDController rightPIDController = new PIDController(.986, 0, 0);
+    //PIDController leftPIDController = new PIDController(.986, 0, 0);
+    //PIDController rightPIDController = new PIDController(.986, 0, 0);
+
+    //TODO: Try configuring different PID values for more consistent results
+    PIDController leftPIDController = new PIDController(.0005, 0, .0001);
+    PIDController rightPIDController = new PIDController(0.0005, 0, .0001);
 
     /**
      * Returns the current wheel speeds of the robot.
@@ -76,6 +83,8 @@ public class DriveTrain implements Subsystem
     {
         initializeMotorControllers();
         transmissionSolenoid = new Solenoid(Constants.driveTrainsmissionSolenoidID);
+        leftMaster.getEncoder().setPosition(0.0);
+        rightMaster.getEncoder().setPosition(0.0);
     }
     
     private void initializeMotorControllers()
@@ -87,7 +96,11 @@ public class DriveTrain implements Subsystem
         rightMaster = new CANSparkMax(Constants.rightSparkMasterID, CANSparkMaxLowLevel.MotorType.kBrushless);
         leftServant = new CANSparkMax(Constants.leftSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
         rightServant = new CANSparkMax(Constants.rightSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
-    
+
+        //leftMaster.getEncoder().setPositionConversionFactor(Constants.driveTrainGearRatio * (6*Math.PI));
+        //rightMaster.getEncoder().setPositionConversionFactor(Constants.driveTrainGearRatio * (6*Math.PI));
+
+
         leftMaster.restoreFactoryDefaults();
         rightMaster.restoreFactoryDefaults();
         leftServant.restoreFactoryDefaults();
@@ -96,7 +109,7 @@ public class DriveTrain implements Subsystem
         leftMaster.setSmartCurrentLimit(80);
         rightMaster.setSmartCurrentLimit(80);
         leftServant.setSmartCurrentLimit(80);
-        rightMaster.setSmartCurrentLimit(80);
+        rightServant.setSmartCurrentLimit(80);
     
         //leftMaster.getEncoder().setPosition(0);
         //rightMaster.getEncoder().setPosition(0);
@@ -104,7 +117,8 @@ public class DriveTrain implements Subsystem
         //rightMaster.setInverted(true);
         //rightServant.setInverted(true);
         
-        //leftMaster.setInverted(true);
+        leftMaster.setInverted(true);
+        leftServant.setInverted(true);
         //rightMaster.setInverted(true);
     
         rightServant.follow(rightMaster);
@@ -116,26 +130,53 @@ public class DriveTrain implements Subsystem
         rightServant.setIdleMode(CANSparkMax.IdleMode.kBrake);
         
     }
-    
+
+    public void resetOdometry()
+    {
+        rightMaster.getEncoder().setPosition(0);
+        leftMaster.getEncoder().setPosition(0);
+        gyro.reset();
+        odometry.resetPosition(startPosition, Rotation2d.fromDegrees(-gyro.getAngle()));
+    }
+
+    public void resetEncoders()
+    {
+        leftMaster.getEncoder();
+
+    }
+
     public void periodic()
     {
-        //pose = odometry.update(getHeading(), getSpeeds().leftMetersPerSecond, getSpeeds().rightMetersPerSecond);
+        odometry.update(getHeading(), getLeftPostion(), getRightPostion());
         SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());
+        System.out.print("Pose2D:" + getPose());
+        SmartDashboard.putNumber("Left Encoder: ", getLeftPostion());
+        SmartDashboard.putNumber("Right Encoder: ", getRightPostion());
+
     }
-    
+
+    public double getLeftPostion()
+    {
+        return leftMaster.getEncoder().getPosition() * Constants.driveTrainGearRatio * (Units.inchesToMeters(6)*Math.PI);
+    }
+
+    public double getRightPostion()
+    {
+        return rightMaster.getEncoder().getPosition() * Constants.driveTrainGearRatio * (Units.inchesToMeters(6)*Math.PI);
+    }
     /**
      * Returns the speeds of the motors stored in a DifferentialDriveWheelSpeeds (in meters/s).
      * @return The speeds of the motors stored in a DifferentialDriveWheelSpeeds (in meters/s).
      */
-    /*
+
     public DifferentialDriveWheelSpeeds getSpeeds()
     {
         return new DifferentialDriveWheelSpeeds(
-                leftMaster.getEncoder().getVelocity() * Constants.inchesToEncoderUnitsScaled / 60,
-                rightMaster.getEncoder().getVelocity() * Constants.inchesToEncoderUnitsScaled / 60
+                leftMaster.getEncoder().getVelocity() * Constants.metersToEncoderUnitsScaled / 60,
+                rightMaster.getEncoder().getVelocity() * Constants.metersToEncoderUnitsScaled / 60
         );
     }
-    */
+
     
     public DifferentialDriveKinematics getKinematics()
     {
@@ -144,7 +185,8 @@ public class DriveTrain implements Subsystem
     
     public Pose2d getPose()
     {
-        return pose;
+        //return pose;
+        return odometry.getPoseMeters();
     }
     
     public PIDController getLeftPIDController()
@@ -178,7 +220,7 @@ public class DriveTrain implements Subsystem
      */
     public void setSpeeds(double leftSpeed, double rightSpeed)
     {
-        leftMaster.set(-leftSpeed); rightMaster.set(rightSpeed);
+        leftMaster.set(leftSpeed); rightMaster.set(rightSpeed);
     }
     
     /**
@@ -198,7 +240,7 @@ public class DriveTrain implements Subsystem
      */
     public void setVoltages(double leftVoltage, double rightVoltage)
     {
-        //leftMaster.setVoltage(leftVoltage / 12.0); rightMaster.setVoltage(rightVoltage / 12.0);
+        leftMaster.setVoltage(leftVoltage); rightMaster.setVoltage(rightVoltage);
         SmartDashboard.putNumber("Left Voltage", leftVoltage);
         SmartDashboard.putNumber("Right Voltage", rightVoltage);
     }
@@ -210,7 +252,7 @@ public class DriveTrain implements Subsystem
      */
     public double[] getPositions()
     {
-        double[] positions = new double[] {-leftMaster.getEncoder().getPosition(),
+        double[] positions = new double[] {leftMaster.getEncoder().getPosition(),
                 rightMaster.getEncoder().getPosition()};
         return positions;
         //return null;
@@ -222,8 +264,7 @@ public class DriveTrain implements Subsystem
      */
     public CANEncoder[] getEncoders()
     {
-        //return new CANEncoder[] {leftMaster.getEncoder(), rightMaster.getEncoder()};
-        return null;
+        return new CANEncoder[] {leftMaster.getEncoder(), rightMaster.getEncoder()};
     }
     
     /**

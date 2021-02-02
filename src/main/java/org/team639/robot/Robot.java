@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import org.team639.robot.Commands.Acquisition.ManualAcquisition;
 import org.team639.robot.Commands.Acquisition.RunAcquisitionForTime;
@@ -24,10 +25,12 @@ import org.team639.robot.Commands.Acquisition.ToggleAcquisitionPistons;
 import org.team639.robot.Commands.Climbing.JoystickClimb;
 import org.team639.robot.Commands.Climbing.ToggleClimbingControls;
 import org.team639.robot.Commands.Drivetrain.*;
+import org.team639.robot.Commands.Indexer.AutoIndexer;
 import org.team639.robot.Commands.Indexer.ToggleIndexAuto;
 import org.team639.robot.Commands.Indexer.TriggerIndexer;
 import org.team639.robot.Commands.Shooter.Shoot;
 import org.team639.robot.Commands.Shooter.ShootMaxSpeed;
+import org.team639.robot.Commands.Shooter.ShotTest;
 import org.team639.robot.Commands.Shooter.ToggleShooterPistons;
 import org.team639.robot.Commands.Spinner.JoystickSpinner;
 import org.team639.robot.Subsystems.*;
@@ -63,9 +66,8 @@ public class Robot extends TimedRobot
     private static Climbing climbing = new Climbing();
 
     public static boolean climbingJoysticksEnabled = false;
-    private static Spinner spinner;
+    private static Spinner spinner = new Spinner();
     private static DataManager dataManager;
-
     private static double defaultAngle; // In degrees
 
     //The path you want to use
@@ -90,7 +92,8 @@ public class Robot extends TimedRobot
         
         setUpXboxController();
         setUpCommands();
-        
+
+        driveTrain.resetOdometry();
         dataManager.disableUpperRingLight();
         SmartDashboard.putData(m_chooser);
     }
@@ -106,11 +109,13 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().registerSubsystem(shooter);
         CommandScheduler.getInstance().registerSubsystem(climbing);
         CommandScheduler.getInstance().registerSubsystem(dataManager);
+        CommandScheduler.getInstance().registerSubsystem(spinner);
 
         CommandScheduler.getInstance().setDefaultCommand(driveTrain, new JoystickDrive());
         CommandScheduler.getInstance().setDefaultCommand(acquisition, new ManualAcquisition());
-        CommandScheduler.getInstance().setDefaultCommand(indexer, new TriggerIndexer());
+        //CommandScheduler.getInstance().setDefaultCommand(indexer, new AutoIndexer());
         CommandScheduler.getInstance().setDefaultCommand(climbing, new JoystickClimb());
+        //CommandScheduler.getInstance().setDefaultCommand(spinner, new JoystickSpinner());
     }
     
     /**
@@ -139,10 +144,15 @@ public class Robot extends TimedRobot
 
         //Controller Settings
         OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
+        OI.ControlLeftBumper.whenHeld(new JoystickSpinner());
+
         OI.ControlButtonY.whenPressed(new ShootMaxSpeed());
         OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
         OI.ControlButtonA.whenPressed(new Shoot());
+        //OI.ControlButtonA.whenHeld(new ShotTest());
         OI.ControlButtonB.whenPressed(new ToggleShooterPistons());
+        OI.ControlLeftStickUp.whenHeld(new TriggerIndexer(1));
+        OI.ControlLeftStickDown.whenHeld(new TriggerIndexer(-1));
     }
 
     /**
@@ -327,7 +337,10 @@ public class Robot extends TimedRobot
     @Override
     public void robotPeriodic()
     {
-    
+
+        SmartDashboard.putString("PoseX", driveTrain.getPose().toString());
+        SmartDashboard.putNumberArray("EncoderVal", driveTrain.getPositions());
+
     }
     
     /**
