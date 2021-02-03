@@ -23,14 +23,14 @@ public class Shooter implements Subsystem
     //0.6: 3400 RPM
     //0.4: 2200 RPM
     //0.2: 1000 RPM
-    private static final double overallPower = 0.8;
+    private static double overallPower = 0.8;
 
     private boolean maxSpeed;
 
     private static final double closePower = overallPower;
     private static final double farPower = overallPower;
     
-    
+    private static double shooterSetting = 1;
     private static final double closeHeight = 1;
     private static final double farHeight = 0;
     
@@ -56,6 +56,7 @@ public class Shooter implements Subsystem
     {
         SmartDashboard.putNumber("MainMotorRPM", mainMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("SecondaryMotorRPM", secondMotor.getEncoder().getVelocity());
+        SmartDashboard.putNumber("ShooterSpeed", overallPower);
     }
 
     public void toggleMaxSpeed()
@@ -86,7 +87,29 @@ public class Shooter implements Subsystem
         mainMotor.set(speed);
         secondMotor.set(speed);
     }
-    
+
+    /**
+     * Toggles through the various powers for shooter
+     * @param toggleUp Whether the shooter power increases or decreases
+     */
+    public void togglePowers(boolean toggleUp)
+    {
+        if(toggleUp == true)
+        {
+            if(overallPower != 1)
+                overallPower += 0.2;
+            else
+                overallPower = 0;
+        }
+        else
+        {
+            if(overallPower != 0)
+                overallPower -= 0.2;
+            else
+                overallPower = 1;
+        }
+    }
+
     public void stop()
     {
         mainMotor.set(0);

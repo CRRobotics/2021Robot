@@ -28,10 +28,7 @@ import org.team639.robot.Commands.Drivetrain.*;
 import org.team639.robot.Commands.Indexer.AutoIndexer;
 import org.team639.robot.Commands.Indexer.ToggleIndexAuto;
 import org.team639.robot.Commands.Indexer.TriggerIndexer;
-import org.team639.robot.Commands.Shooter.Shoot;
-import org.team639.robot.Commands.Shooter.ShootMaxSpeed;
-import org.team639.robot.Commands.Shooter.ShotTest;
-import org.team639.robot.Commands.Shooter.ToggleShooterPistons;
+import org.team639.robot.Commands.Shooter.*;
 import org.team639.robot.Commands.Spinner.JoystickSpinner;
 import org.team639.robot.Subsystems.*;
 import org.team639.lib.Constants;
@@ -110,12 +107,9 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().registerSubsystem(climbing);
         CommandScheduler.getInstance().registerSubsystem(dataManager);
         CommandScheduler.getInstance().registerSubsystem(spinner);
-
         CommandScheduler.getInstance().setDefaultCommand(driveTrain, new JoystickDrive());
         CommandScheduler.getInstance().setDefaultCommand(acquisition, new ManualAcquisition());
-        //CommandScheduler.getInstance().setDefaultCommand(indexer, new AutoIndexer());
         CommandScheduler.getInstance().setDefaultCommand(climbing, new JoystickClimb());
-        //CommandScheduler.getInstance().setDefaultCommand(spinner, new JoystickSpinner());
     }
     
     /**
@@ -123,20 +117,6 @@ public class Robot extends TimedRobot
      */
     private void setUpXboxController()
     {
-        /*
-        drivingXboxController = new XboxController(Constants.drivingXboxControllerPort);
-        controlXboxController = new XboxController(Constants.controlXboxControllerPort);
-        JoystickButton aButton = new JoystickButton(controlXboxController, XboxController.Button.kA.value);
-        JoystickButton bButton = new JoystickButton(controlXboxController, XboxController.Button.kB.value);
-        JoystickButton xButton = new JoystickButton(controlXboxController, XboxController.Button.kX.value);
-        JoystickButton yButton = new JoystickButton(controlXboxController, XboxController.Button.kY.value);
-        JoystickButton leftControlBumper = new JoystickButton(controlXboxController, XboxController.Button.kBumperRight.value);
-
-        JoystickButton xDriveButton = new JoystickButton(drivingXboxController, XboxController.Button.kX.value);
-        JoystickButton aDriveButton = new JoystickButton(drivingXboxController, XboxController.Button.kA.value);
-        JoystickButton yDriveButton = new JoystickButton(drivingXboxController, XboxController.Button.kY.value);
-        JoystickButton rightDriveBumper = new JoystickButton(drivingXboxController, XboxController.Button.kBumperRight.value);
-        */
         //Driver Settings
         OI.DriverRightBumper.whenReleased(new ToggleDriveTrainGears());
         OI.DriverButtonY.whenPressed(new AutoRotateToTarget());
@@ -149,10 +129,12 @@ public class Robot extends TimedRobot
         OI.ControlButtonY.whenPressed(new ShootMaxSpeed());
         OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
         OI.ControlButtonA.whenPressed(new Shoot());
-        //OI.ControlButtonA.whenHeld(new ShotTest());
         OI.ControlButtonB.whenPressed(new ToggleShooterPistons());
         OI.ControlLeftStickUp.whenHeld(new TriggerIndexer(1));
         OI.ControlLeftStickDown.whenHeld(new TriggerIndexer(-1));
+
+        OI.ControlDPadLeft.whenPressed(new ShotToggler(false));
+        OI.ControlDPadLeft.whenPressed(new ShotToggler(true));
     }
 
     /**
@@ -185,29 +167,7 @@ public class Robot extends TimedRobot
      */
     public Command getAutonomousCommand()
     {
-    /*
-        TrajectoryConfig config = new TrajectoryConfig(1, 1);
-        config.setKinematics(driveTrain.getKinematics());
-        Trajectory trajectory = TrajectoryGenerator.generateTrajectory(
-                Arrays.asList(new Pose2d(), new Pose2d(new Translation2d(1.0, 0), new Rotation2d())), config
-        );
-    
-        RamseteCommand ramseteCommand = new RamseteCommand(
-                trajectory,
-                driveTrain::getPose,
-                new RamseteController(2.0, 0.7),
-                driveTrain.getFeedForward(),
-                driveTrain.getKinematics(),
-                driveTrain::getSpeeds,
-                driveTrain.getLeftPIDController(),
-                driveTrain.getRightPIDController(),
-                driveTrain::setVoltages,
-                driveTrain
-        );
-        
-        return ramseteCommand;
-        
-     */
+
         /*
         return new MoveRotateChain(new Command[] {
                 new Shoot(),
@@ -217,7 +177,6 @@ public class Robot extends TimedRobot
                 new AutoDriveForward(2),
                 new Shoot(),
                 new AutoRotate(180)});
-
          */
 
         var autoVoltageConstraint =
@@ -307,7 +266,7 @@ public class Robot extends TimedRobot
 
         ParallelRaceGroup acquisitionAuto = new ParallelRaceGroup(
                 OneMeter,
-                new RunAcquisitionForTime(999999)
+                new RunAcquisitionForTime(999999) //don't worry about it
         );
 
         switch(m_chooser.getSelected())

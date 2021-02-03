@@ -5,6 +5,9 @@ import org.team639.robot.Robot;
 import org.team639.robot.Subsystems.Index;
 import org.team639.robot.Subsystems.Shooter;
 
+/**
+ * Command to test the shooter
+ */
 public class ShotTest extends CommandBase
 {
     private Index indexer;
