@@ -64,11 +64,11 @@ public class Robot extends TimedRobot
 
     public static boolean climbingJoysticksEnabled = false;
     private static Spinner spinner = new Spinner();
-    private static DataManager dataManager;
+    private static DataManager dataManager =  new DataManager();
     private static double defaultAngle; // In degrees
 
     //The path you want to use
-    private String trajectoryJSON = "Pathweaver/output/snake.wpilib.json";
+    private String trajectoryJSON = "paths/Barrel_Racing.wpilib.json";
 
 
 
@@ -84,7 +84,6 @@ public class Robot extends TimedRobot
     public void robotInit()
     {
 
-        dataManager = new DataManager();
         defaultAngle = driveTrain.getHeading().getDegrees();
         
         setUpXboxController();
@@ -92,7 +91,6 @@ public class Robot extends TimedRobot
 
         driveTrain.resetOdometry();
         dataManager.disableUpperRingLight();
-        SmartDashboard.putData(m_chooser);
     }
     
     /**
@@ -205,6 +203,15 @@ public class Robot extends TimedRobot
                 config
         );
 
+        Trajectory trajectory2 = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(0, 0, new Rotation2d(0)),
+                List.of(
+                        new Translation2d(1, 0)
+                ),
+                new Pose2d(1, 1, new Rotation2d(Math.PI/2)),
+                config
+        );
+
         Trajectory meter = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
                 List.of(
@@ -214,7 +221,7 @@ public class Robot extends TimedRobot
                 config
         );
 
-
+/*
         //BOX BUG
         Trajectory boxBug = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0,0, new Rotation2d(0)),
@@ -235,11 +242,14 @@ public class Robot extends TimedRobot
                 new Pose2d(0,0, new Rotation2d(0)),
                 config
         );
+        */
+
 
         Trajectory pathweaverTest = loadConfig(trajectoryJSON);
 
-        RamseteCommand OneMeter = new RamseteCommand(
-                meter,
+        //Runs one meter
+        RamseteCommand ramseteCommand = new RamseteCommand(
+                pathweaverTest,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -251,24 +261,8 @@ public class Robot extends TimedRobot
                 driveTrain
                 );
 
-        RamseteCommand snake = new RamseteCommand(
-                pathweaverTest,
-                driveTrain::getPose,
-                new RamseteController(2.0, 0.7),
-                driveTrain.getFeedForward(),
-                driveTrain.getKinematics(),
-                driveTrain::getWheelSpeeds,
-                driveTrain.getLeftPIDController(),
-                driveTrain.getRightPIDController(),
-                driveTrain::setVoltages,
-                driveTrain
-        );
 
-        ParallelRaceGroup acquisitionAuto = new ParallelRaceGroup(
-                OneMeter,
-                new RunAcquisitionForTime(999999) //don't worry about it
-        );
-
+        /*
         switch(m_chooser.getSelected())
         {
             case METER:
@@ -280,6 +274,8 @@ public class Robot extends TimedRobot
             default:
                 return OneMeter;
         }
+        */
+        return ramseteCommand;
 
     }
     
@@ -296,10 +292,8 @@ public class Robot extends TimedRobot
     @Override
     public void robotPeriodic()
     {
-
         SmartDashboard.putString("PoseX", driveTrain.getPose().toString());
         SmartDashboard.putNumberArray("EncoderVal", driveTrain.getPositions());
-
     }
     
     /**
@@ -316,7 +310,7 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousInit()
     {
-        System.out.println("Auto selected: " + m_chooser.getSelected());
+        //System.out.println("Auto selected: " + m_chooser.getSelected());
         CommandScheduler.getInstance().cancelAll();
         getAutonomousCommand().schedule();
     }
@@ -327,6 +321,7 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousPeriodic()
     {
+        /*
         switch (m_autoSelected) {
             case kCustomAuto:
                 // Put custom auto code here
@@ -336,6 +331,8 @@ public class Robot extends TimedRobot
                 // Put default auto code here
                 break;
         }
+
+         */
         CommandScheduler.getInstance().run();
     }
     

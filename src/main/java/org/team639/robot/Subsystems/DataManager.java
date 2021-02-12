@@ -2,6 +2,7 @@ package org.team639.robot.Subsystems;
 
 import edu.wpi.first.hal.sim.mockdata.PCMDataJNI;
 import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.Solenoid;
@@ -92,12 +93,14 @@ public class DataManager implements Subsystem
         //rawBallData = visionTable.getEntry("balls").getDoubleArray(new double[] {0, 0});
         //ballDetected = rawBallData.length > 0;
         //canShootInner = visionTable.getEntry("InnerTargetPossible").getDouble(0) == 1;
-        outerHorizontalAngle = visionTable.getEntry("OuterHorizontalAngle").getDouble(0) * 180.0/3.1415 * -1;
+        NetworkTableEntry outerAngle = visionTable.getEntry("OuterHorizontalAngle");
         //outerElevationAngle = visionTable.getEntry("OuterElevationAngle").getDouble(0);
         //angleToOuterTarget = new double[] {outerElevationAngle, outerElevationAngle};
-        distanceToOuterTarget = visionTable.getEntry("OuterHorizontalDistance").getDouble(0) / Constants.metersToInches;
+        NetworkTableEntry distanceToOuterTarget = visionTable.getEntry("OuterHorizontalDistance");
+        //SmartDashboard.putNumberArray("RawBallData", rawBallData);
+        //SmartDashboard.putBoolean("BallDetected", ballDetected);
 
-        System.out.println("Angle: " + outerHorizontalAngle);
+        System.out.println("Angle: " + outerAngle);
         System.out.println("Distance: " + distanceToOuterTarget);
 
         /*String str = "";
@@ -109,10 +112,7 @@ public class DataManager implements Subsystem
       //  System.out.println("ball: " + str);
       //  System.out.println("The existence of target data is " + visionTable.getEntry("OuterHorizontalDistance").exists());
         //System.out.println("Distance: " + distanceToOuterTarget + ", Angle: " + outerHorizontalAngle);
-        SmartDashboard.putNumber("Distance", distanceToOuterTarget);
-        SmartDashboard.putNumber("Distances", distanceToOuterTarget);
-        SmartDashboard.putNumber("Angle", outerHorizontalAngle);
-        SmartDashboard.putNumber("Angls", outerHorizontalAngle);
+
     }
     
     private void updateI2C()

@@ -44,8 +44,10 @@ public class DriveTrain implements Subsystem
     //PIDController rightPIDController = new PIDController(.986, 0, 0);
 
     //TODO: Try configuring different PID values for more consistent results
-    PIDController leftPIDController = new PIDController(.0005, 0, .0001);
-    PIDController rightPIDController = new PIDController(0.0005, 0, .0001);
+    //PIDController leftPIDController = new PIDController(.0005, 0, 0.0);
+    //PIDController rightPIDController = new PIDController(0.0005, 0, 0.0);
+    PIDController leftPIDController = new PIDController(.0002, 0, 0.0);
+    PIDController rightPIDController = new PIDController(0.0002, 0, 0.0);
 
     /**
      * Returns the current wheel speeds of the robot.
@@ -106,10 +108,10 @@ public class DriveTrain implements Subsystem
         leftServant.restoreFactoryDefaults();
         rightServant.restoreFactoryDefaults();
 
-        leftMaster.setSmartCurrentLimit(80);
-        rightMaster.setSmartCurrentLimit(80);
-        leftServant.setSmartCurrentLimit(80);
-        rightServant.setSmartCurrentLimit(80);
+        leftMaster.setSmartCurrentLimit(40);
+        rightMaster.setSmartCurrentLimit(40);
+        leftServant.setSmartCurrentLimit(40);
+        rightServant.setSmartCurrentLimit(40);
     
         //leftMaster.getEncoder().setPosition(0);
         //rightMaster.getEncoder().setPosition(0);
@@ -119,8 +121,7 @@ public class DriveTrain implements Subsystem
         
         leftMaster.setInverted(true);
         leftServant.setInverted(true);
-        //rightMaster.setInverted(true);
-    
+
         rightServant.follow(rightMaster);
         leftServant.follow(leftMaster);
     
@@ -149,7 +150,6 @@ public class DriveTrain implements Subsystem
     {
         odometry.update(getHeading(), getLeftPostion(), getRightPostion());
         SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());
-        System.out.print("Pose2D:" + getPose());
         SmartDashboard.putNumber("Left Encoder: ", getLeftPostion());
         SmartDashboard.putNumber("Right Encoder: ", getRightPostion());
 
