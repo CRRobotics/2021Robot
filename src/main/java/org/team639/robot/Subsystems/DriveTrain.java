@@ -137,7 +137,7 @@ public class DriveTrain implements Subsystem
         rightMaster.getEncoder().setPosition(0);
         leftMaster.getEncoder().setPosition(0);
         gyro.reset();
-        odometry.resetPosition(startPosition, Rotation2d.fromDegrees(-gyro.getAngle()));
+        odometry.resetPosition(startPosition, Rotation2d.fromDegrees(gyro.getAngle()));
     }
 
     public void resetEncoders()
@@ -210,7 +210,8 @@ public class DriveTrain implements Subsystem
      */
     public Rotation2d getHeading()
     {
-        return Rotation2d.fromDegrees(-gyro.getAngle());
+        return Rotation2d.fromDegrees(
+                -gyro.getAngle());
     }
     
     /**

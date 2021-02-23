@@ -64,11 +64,11 @@ public class Robot extends TimedRobot
 
     public static boolean climbingJoysticksEnabled = false;
     private static Spinner spinner = new Spinner();
-    private static DataManager dataManager =  new DataManager();
+    private static DataManager dataManager;
     private static double defaultAngle; // In degrees
 
     //The path you want to use
-    private String trajectoryJSON = "paths/Barrel_Racing.wpilib.json";
+    private String trajectoryJSON = "paths/Slalom.wpilib.json";
 
 
 
@@ -83,7 +83,7 @@ public class Robot extends TimedRobot
     @Override
     public void robotInit()
     {
-
+        dataManager = new DataManager();
         defaultAngle = driveTrain.getHeading().getDegrees();
         
         setUpXboxController();
@@ -91,6 +91,7 @@ public class Robot extends TimedRobot
 
         driveTrain.resetOdometry();
         dataManager.disableUpperRingLight();
+
     }
     
     /**
@@ -249,7 +250,7 @@ public class Robot extends TimedRobot
 
         //Runs one meter
         RamseteCommand ramseteCommand = new RamseteCommand(
-                pathweaverTest,
+                trajectory,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -260,6 +261,16 @@ public class Robot extends TimedRobot
                 driveTrain::setVoltages,
                 driveTrain
                 );
+
+
+        ParallelRaceGroup acqRunner = new ParallelRaceGroup(
+                ramseteCommand,
+                new RunAcquisitionForTime(99999999)
+        );
+        SequentialCommandGroup acqRunnerSeq = new SequentialCommandGroup(
+                new ToggleAcquisitionPistons(),
+                acqRunner
+        );
 
 
         /*
