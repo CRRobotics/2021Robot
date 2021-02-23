@@ -28,7 +28,7 @@ public class ToggleAcquisitionPistons extends CommandBase
         return done;
     }
     
-    public void end()
+    public void end(boolean interrupted)
     {
         super.end(false);
     }

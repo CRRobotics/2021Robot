@@ -57,12 +57,13 @@ public class DataManager implements Subsystem
         acquisitionSensorConnected = false;
         ringLightUpper = new Solenoid(4);
         ringLightLower = new Solenoid(5);
-        
+
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        visionTable = inst.getTable("CameraTracker");
+
         inst.startClientTeam(639);
         inst.startDSClient();
-        visionTable = inst.getTable("CameraTracker");
-        
+
         colorSensor = new I2C(I2C.Port.kOnboard, 0x18);
         i2cReading = new byte[5];
         colorSensor.readOnly(i2cReading, 5);

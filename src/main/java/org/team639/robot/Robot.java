@@ -68,7 +68,7 @@ public class Robot extends TimedRobot
     private static double defaultAngle; // In degrees
 
     //The path you want to use
-    private String trajectoryJSON = "paths/Slalom.wpilib.json";
+    private String trajectoryJSON = "paths/Barrel_Racing.wpilib.json";
 
 
 
@@ -250,7 +250,7 @@ public class Robot extends TimedRobot
 
         //Runs one meter
         RamseteCommand ramseteCommand = new RamseteCommand(
-                trajectory,
+                meter,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -265,7 +265,7 @@ public class Robot extends TimedRobot
 
         ParallelRaceGroup acqRunner = new ParallelRaceGroup(
                 ramseteCommand,
-                new RunAcquisitionForTime(99999999)
+                new RunAcquisitionForTime(99999999) //dont worry about it...
         );
         SequentialCommandGroup acqRunnerSeq = new SequentialCommandGroup(
                 new ToggleAcquisitionPistons(),
