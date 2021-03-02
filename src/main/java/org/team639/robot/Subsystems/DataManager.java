@@ -24,12 +24,13 @@ public class DataManager implements Subsystem
 {
     
     private static NetworkTable visionTable;
-    private boolean visionConnected;
+    boolean visionConnected;
     private boolean acquisitionSensorConnected;
     
     private boolean ballDetected;
     private double[] rawBallData;
     private ArrayList<double[]> balls = new ArrayList<>();
+    private ArrayList<Command> autonChain = new ArrayList<Command>();
     
     private boolean canShootInner;
     private double[] angleToOuterTarget;
@@ -49,10 +50,15 @@ public class DataManager implements Subsystem
     
     private Solenoid ringLightUpper;
     private Solenoid ringLightLower;
-    
-    public DataManager()
+
+
+    public void connectVisions()
     {
         visionConnected = true;
+    }
+    public DataManager()
+    {
+        visionConnected = false;
         i2cConnected = false;
         acquisitionSensorConnected = false;
         ringLightUpper = new Solenoid(4);
@@ -60,7 +66,6 @@ public class DataManager implements Subsystem
 
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         visionTable = inst.getTable("CameraTracker");
-
         inst.startClientTeam(639);
         inst.startDSClient();
 
@@ -69,7 +74,7 @@ public class DataManager implements Subsystem
         colorSensor.readOnly(i2cReading, 5);
         
         acquisitionSensor = new PhotoelectricSensor(Constants.acquisitionSensorChannel);
-        
+
         updateNetworkTables();
         updateI2C();
         
@@ -101,8 +106,8 @@ public class DataManager implements Subsystem
         //SmartDashboard.putNumberArray("RawBallData", rawBallData);
         //SmartDashboard.putBoolean("BallDetected", ballDetected);
 
-        System.out.println("Angle: " + outerAngle);
-        System.out.println("Distance: " + distanceToOuterTarget);
+        System.out.println("Angle: " + outerAngle.getDouble(1));
+        System.out.println("Distance: " + distanceToOuterTarget.getDouble(1));
 
         /*String str = "";
         for(double i : rawBallData)

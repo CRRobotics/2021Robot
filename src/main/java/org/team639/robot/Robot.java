@@ -66,9 +66,8 @@ public class Robot extends TimedRobot
     private static Spinner spinner = new Spinner();
     private static DataManager dataManager;
     private static double defaultAngle; // In degrees
-
     //The path you want to use
-    private String trajectoryJSON = "paths/Barrel_Racing.wpilib.json";
+    private String trajectoryJSON = "paths/TestTurnsMoreWaypoints.wpilib.json";
 
 
 
@@ -85,13 +84,10 @@ public class Robot extends TimedRobot
     {
         dataManager = new DataManager();
         defaultAngle = driveTrain.getHeading().getDegrees();
-        
         setUpXboxController();
         setUpCommands();
-
-        driveTrain.resetOdometry();
+        driveTrain.resetOdometry(driveTrain.startPosition);
         dataManager.disableUpperRingLight();
-
     }
     
     /**
@@ -216,9 +212,9 @@ public class Robot extends TimedRobot
         Trajectory meter = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
                 List.of(
-                        new Translation2d(1, 0)
+                        new Translation2d(3, 0)
                 ),
-                new Pose2d(1, 0, new Rotation2d(0)),
+                new Pose2d(5, 0, new Rotation2d(0)),
                 config
         );
 
@@ -246,11 +242,11 @@ public class Robot extends TimedRobot
         */
 
 
-        Trajectory pathweaverTest = loadConfig(trajectoryJSON);
+        Trajectory pathweaverRunner = loadConfig(trajectoryJSON);
 
         //Runs one meter
         RamseteCommand ramseteCommand = new RamseteCommand(
-                meter,
+                pathweaverRunner,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -262,17 +258,7 @@ public class Robot extends TimedRobot
                 driveTrain
                 );
 
-
-        ParallelRaceGroup acqRunner = new ParallelRaceGroup(
-                ramseteCommand,
-                new RunAcquisitionForTime(99999999) //dont worry about it...
-        );
-        SequentialCommandGroup acqRunnerSeq = new SequentialCommandGroup(
-                new ToggleAcquisitionPistons(),
-                acqRunner
-        );
-
-
+        driveTrain.resetOdometry(pathweaverRunner.getInitialPose());
         /*
         switch(m_chooser.getSelected())
         {
@@ -286,8 +272,11 @@ public class Robot extends TimedRobot
                 return OneMeter;
         }
         */
+        //................//
+        System.out.println("DONT RUN TRAJECTORIES OR STUFF WILL BREAK YOU DUMBASS RUN A PATH AAAAAAAJHHHHHH");
+        System.out.println("DONT RUN TRAJECTORIES OR STUFF WILL BREAK YOU DUMBASS RUN A PATH AAAAAAAJHHHHHH");
+        System.out.println("DONT RUN TRAJECTORIES OR STUFF WILL BREAK YOU DUMBASS RUN A PATH AAAAAAAJHHHHHH");
         return ramseteCommand;
-
     }
     
 
@@ -321,11 +310,16 @@ public class Robot extends TimedRobot
     @Override
     public void autonomousInit()
     {
+        dataManager.connectVisions();
         //System.out.println("Auto selected: " + m_chooser.getSelected());
         CommandScheduler.getInstance().cancelAll();
         getAutonomousCommand().schedule();
     }
-    
+
+    public void teleopInit()
+    {
+        dataManager.connectVisions();
+    }
     /**
      * This function is called periodically during autonomous.
      */
@@ -346,6 +340,8 @@ public class Robot extends TimedRobot
          */
         CommandScheduler.getInstance().run();
     }
+
+
     
     /**
      * This function is called periodically during operator control.

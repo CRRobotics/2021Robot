@@ -33,7 +33,7 @@ public class DriveTrain implements Subsystem
     
     AHRS gyro = new AHRS(SPI.Port.kMXP);
     
-    private Pose2d startPosition = new Pose2d(new Translation2d(0, 0), getHeading());
+    public Pose2d startPosition = new Pose2d(new Translation2d(0, 0), getHeading());
     private Pose2d pose = startPosition;
     DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(Constants.chassisWidth);
     DifferentialDriveOdometry odometry = new DifferentialDriveOdometry(getHeading());
@@ -44,10 +44,10 @@ public class DriveTrain implements Subsystem
     //PIDController rightPIDController = new PIDController(.986, 0, 0);
 
     //TODO: Try configuring different PID values for more consistent results
-    //PIDController leftPIDController = new PIDController(.0005, 0, 0.0);
-    //PIDController rightPIDController = new PIDController(0.0005, 0, 0.0);
-    PIDController leftPIDController = new PIDController(.0002, 0, 0.0);
-    PIDController rightPIDController = new PIDController(0.0002, 0, 0.0);
+    //PIDController leftPIDController = new PIDController(.0002, 0, 0.0);
+    //PIDController rightPIDController = new PIDController(0.0002, 0, 0.0);
+    PIDController leftPIDController = new PIDController(.0001, 0, 0.0);
+    PIDController rightPIDController = new PIDController(0.0001, 0, 0.0);
 
     /**
      * Returns the current wheel speeds of the robot.
@@ -108,10 +108,10 @@ public class DriveTrain implements Subsystem
         leftServant.restoreFactoryDefaults();
         rightServant.restoreFactoryDefaults();
 
-        leftMaster.setSmartCurrentLimit(40);
-        rightMaster.setSmartCurrentLimit(40);
-        leftServant.setSmartCurrentLimit(40);
-        rightServant.setSmartCurrentLimit(40);
+        leftMaster.setSmartCurrentLimit(80);
+        rightMaster.setSmartCurrentLimit(80);
+        leftServant.setSmartCurrentLimit(80);
+        rightServant.setSmartCurrentLimit(80);
     
         //leftMaster.getEncoder().setPosition(0);
         //rightMaster.getEncoder().setPosition(0);
@@ -132,18 +132,17 @@ public class DriveTrain implements Subsystem
         
     }
 
-    public void resetOdometry()
+    public void resetOdometry(Pose2d initPose)
     {
-        rightMaster.getEncoder().setPosition(0);
-        leftMaster.getEncoder().setPosition(0);
+        resetEncoders();
         gyro.reset();
-        odometry.resetPosition(startPosition, Rotation2d.fromDegrees(gyro.getAngle()));
+        odometry.resetPosition(initPose, getHeading());
     }
 
     public void resetEncoders()
     {
-        leftMaster.getEncoder();
-
+        rightMaster.getEncoder().setPosition(0);
+        leftMaster.getEncoder().setPosition(0);
     }
 
     public void periodic()
@@ -152,7 +151,7 @@ public class DriveTrain implements Subsystem
         SmartDashboard.putNumber("Gyro Angle", getHeading().getDegrees());
         SmartDashboard.putNumber("Left Encoder: ", getLeftPostion());
         SmartDashboard.putNumber("Right Encoder: ", getRightPostion());
-
+        SmartDashboard.putNumber("Speed", rightMaster.getEncoder().getVelocity());
     }
 
     public double getLeftPostion()
