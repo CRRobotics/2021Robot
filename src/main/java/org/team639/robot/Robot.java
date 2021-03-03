@@ -272,11 +272,8 @@ public class Robot extends TimedRobot
                 return OneMeter;
         }
         */
-        //................//
-        System.out.println("DONT RUN TRAJECTORIES OR STUFF WILL BREAK YOU DUMBASS RUN A PATH AAAAAAAJHHHHHH");
-        System.out.println("DONT RUN TRAJECTORIES OR STUFF WILL BREAK YOU DUMBASS RUN A PATH AAAAAAAJHHHHHH");
-        System.out.println("DONT RUN TRAJECTORIES OR STUFF WILL BREAK YOU DUMBASS RUN A PATH AAAAAAAJHHHHHH");
         return ramseteCommand;
+
     }
     
 
