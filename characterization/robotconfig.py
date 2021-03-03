@@ -12,14 +12,14 @@
     # 'PWMTalonSRX'
     # 'PWMVictorSPX'
     # If doing drive test, treat this as the left side of the drivetrain
-    "controllerTypes": [Spark],
+    "controllerTypes": ['Spark','Spark'],
     # Only if you are doing drive (leave empty "[]" if not)
-    "rightControllerTypes": [Spark],
+    "rightControllerTypes": ['Spark','Spark'],
     # Set motors to inverted or not
     # If doing drive test, treat this as the left side of the drivetrain
-    "motorsInverted": [],
+    "motorsInverted": [True,True],
     # Only if you are doing drive (leave empty "[]" if not)
-    "rightMotorsInverted": [],
+    "rightMotorsInverted": [False,False],
     # Encoder edges-per-revolution (*NOT* cycles per revolution!)
     # For the AMT 103-V, use 8192 (2048 * 4)
     "encoderEPR": 8192,
