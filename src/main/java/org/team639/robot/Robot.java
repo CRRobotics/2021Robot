@@ -67,7 +67,7 @@ public class Robot extends TimedRobot
     private static DataManager dataManager;
     private static double defaultAngle; // In degrees
     //The path you want to use
-    private String trajectoryJSON = "paths/TestTurnsMoreWaypoints.wpilib.json";
+    private String trajectoryJSON = "paths/Bounce Path.wpilib.json";
 
 
 
