@@ -22,7 +22,6 @@ import java.util.ArrayList;
 
 public class DataManager implements Subsystem
 {
-    
     private static NetworkTable visionTable;
     boolean visionConnected;
     private boolean acquisitionSensorConnected;
@@ -47,6 +46,7 @@ public class DataManager implements Subsystem
     private PhotoelectricSensor acquisitionSensor;
     //private boolean acquisitionSensorInputExists;
     private boolean acquisitionSensorInput;
+    private NetworkTableEntry tableTest;
     
     private Solenoid ringLightUpper;
     private Solenoid ringLightLower;
@@ -78,17 +78,17 @@ public class DataManager implements Subsystem
         updateNetworkTables();
         updateI2C();
         
-        enableUpperLight();
-        disableLowerRingLight();
+        disableUpperRingLight();
+        enableLowerLight();
+
     }
     
     public void periodic()
     {
-        if(visionConnected) {
+        if(visionConnected)
             enableUpperLight();
-            disableLowerRingLight();
-            updateNetworkTables();
-        }
+
+        updateNetworkTables();
         if(i2cConnected) {
             updateI2C();
         }
@@ -96,18 +96,21 @@ public class DataManager implements Subsystem
     
     public void updateNetworkTables()
     {
-        //rawBallData = visionTable.getEntry("balls").getDoubleArray(new double[] {0, 0});
+        tableTest = visionTable.getEntry("path");
+        rawBallData = visionTable.getEntry("balls").getDoubleArray(new double[] {0, 0});
+        SmartDashboard.putNumber("BallDistance", rawBallData[0]);
+        System.out.println("------NETWORKTEST: " + tableTest);
         //ballDetected = rawBallData.length > 0;
         //canShootInner = visionTable.getEntry("InnerTargetPossible").getDouble(0) == 1;
-        NetworkTableEntry outerAngle = visionTable.getEntry("OuterHorizontalAngle");
+        //NetworkTableEntry outerAngle = visionTable.getEntry("OuterHorizontalAngle");
         //outerElevationAngle = visionTable.getEntry("OuterElevationAngle").getDouble(0);
         //angleToOuterTarget = new double[] {outerElevationAngle, outerElevationAngle};
-        NetworkTableEntry distanceToOuterTarget = visionTable.getEntry("OuterHorizontalDistance");
+        //NetworkTableEntry distanceToOuterTarget = visionTable.getEntry("OuterHorizontalDistance");
         //SmartDashboard.putNumberArray("RawBallData", rawBallData);
         //SmartDashboard.putBoolean("BallDetected", ballDetected);
 
-        System.out.println("Angle: " + outerAngle.getDouble(1));
-        System.out.println("Distance: " + distanceToOuterTarget.getDouble(1));
+        //System.out.println("Angle: " + outerAngle.getDouble(1));
+        //System.out.println("Distance: " + distanceToOuterTarget.getDouble(1));
 
         /*String str = "";
         for(double i : rawBallData)

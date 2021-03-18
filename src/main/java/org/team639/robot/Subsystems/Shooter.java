@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Subsystem;
 import org.team639.lib.Constants;
 import edu.wpi.first.wpilibj.Solenoid;
+import org.team639.robot.OI;
 import org.team639.robot.Robot;
 
 import javax.xml.crypto.Data;
@@ -36,6 +37,7 @@ public class Shooter implements Subsystem
     private static double shooterSetting = 1;
     private static final double closeHeight = 1;
     private static final double farHeight = 0;
+    long lastToggle = 0;
     
     
     public Shooter() {
@@ -61,9 +63,10 @@ public class Shooter implements Subsystem
 
     public void periodic()
     {
+        togglePowers(true);
         SmartDashboard.putNumber("MainMotorRPM", mainMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("SecondaryMotorRPM", secondMotor.getEncoder().getVelocity());
-        SmartDashboard.putNumber("ShooterSpeed", overallPower);
+        SmartDashboard.putNumber("ShooterSpeed Percentage", overallPower);
     }
 
     public void toggleMaxSpeed()
@@ -112,20 +115,33 @@ public class Shooter implements Subsystem
      */
     public void togglePowers(boolean toggleUp)
     {
-        if(toggleUp == true)
+        if(OI.ControlDPadUp.get() == true && System.currentTimeMillis() > (lastToggle + 300))
         {
-            if(overallPower != 1)
-                overallPower += 0.2;
-            else
+            if(overallPower != 1) {
+                overallPower += 0.1;
+                lastToggle = System.currentTimeMillis();
+
+            }
+            else {
                 overallPower = 0;
+                lastToggle = System.currentTimeMillis();
+
+            }
         }
-        else
+        if(OI.ControlDPadDown.get() == true && System.currentTimeMillis() > (lastToggle + 300))
         {
-            if(overallPower != 0)
-                overallPower -= 0.2;
-            else
+            if(overallPower != 0) {
+                overallPower -= 0.1;
+                lastToggle = System.currentTimeMillis();
+
+            }
+            else {
                 overallPower = 1;
+                lastToggle = System.currentTimeMillis();
+
+            }
         }
+
     }
 
     public void stop()
@@ -136,14 +152,14 @@ public class Shooter implements Subsystem
     
     public void setMotorSpeedClose()
     {
-        mainMotor.set(closePower);
-        secondMotor.set(closePower);
+        mainMotor.set(overallPower);
+        secondMotor.set(overallPower);
     }
     
     public void setMotorSpeedFar()
     {
-        mainMotor.set(farPower);
-        secondMotor.set(farPower);
+        mainMotor.set(overallPower);
+        secondMotor.set(overallPower);
     }
     
 
