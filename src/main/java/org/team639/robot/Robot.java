@@ -1,5 +1,8 @@
 package org.team639.robot;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.*;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -67,8 +70,10 @@ public class Robot extends TimedRobot
     private static DataManager dataManager;
     private static double defaultAngle; // In degrees
     //The path you want to use
-    private String trajectoryJSON = "paths/Bounce Path.wpilib.json";
+    private String trajectoryJSON = "paths/Barrel_Racing.wpilib.json";
 
+    NetworkTableEntry testEntry;
+    NetworkTable visionTable;
 
 
     //private static AcquisitionToIndexer acquisitionToIndexer = new AcquisitionToIndexer();
@@ -82,6 +87,10 @@ public class Robot extends TimedRobot
     @Override
     public void robotInit()
     {
+        NetworkTableInstance inst = NetworkTableInstance.getDefault();
+        visionTable = inst.getTable("CameraTracker");
+        testEntry = visionTable.getEntry("path");
+
         dataManager = new DataManager();
         defaultAngle = driveTrain.getHeading().getDegrees();
         setUpXboxController();
@@ -116,7 +125,7 @@ public class Robot extends TimedRobot
         OI.DriverRightBumper.whenReleased(new ToggleDriveTrainGears());
         OI.DriverButtonY.whenPressed(new AutoRotateToTarget());
         OI.DriverButtonA.whenPressed(new ToggleIndexAuto());
-        OI.ControlButtonX.whenPressed(new AutoRotate(90));
+        //OI.ControlButtonX.whenPressed(new AutoRotate(90));
         OI.DriverButtonB.whenPressed(new DriveWithAcquistionAuto(2));
 
         //Controller Settings
@@ -130,8 +139,7 @@ public class Robot extends TimedRobot
         OI.ControlLeftStickUp.whenHeld(new TriggerIndexer(1));
         OI.ControlLeftStickDown.whenHeld(new TriggerIndexer(-1));
 
-        OI.ControlDPadLeft.whenPressed(new ShotToggler(false));
-        OI.ControlDPadLeft.whenPressed(new ShotToggler(true));
+
     }
 
     /**
