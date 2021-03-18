@@ -30,6 +30,7 @@ public class DriveAndAcquireBall extends CommandGroupBase {
     private double targetAngle;
     private Command autoRotate;
     private Command driveWithAcquisitionAuto;
+    private Command runAcquisitionForTime;
 
     private double leftEncoderDiff;
     private double rightEncoderDiff;
@@ -41,6 +42,7 @@ public class DriveAndAcquireBall extends CommandGroupBase {
 
         addCommands(autoRotate);
         addCommands(driveWithAcquisitionAuto);
+        addCommands(runAcquisitionForTime);
         driveTrain = Robot.getDriveTrain();
         addRequirements(driveTrain);
         photoInfo = new DataManager();
@@ -76,6 +78,11 @@ public class DriveAndAcquireBall extends CommandGroupBase {
     public void execute()
     {
     autoRotate.execute();
+runAcquisitionForTime.initialize();
+        while (photoInfo.getBalls().size() <= 5 && !done)
+        {
+            runAcquisitionForTime.execute();
+        }
     double[] positions = driveTrain.getPositions();
     double leftEncoderPosition = positions[0];
     double rightEncoderPosition = positions[1];
