@@ -54,11 +54,12 @@ public class Constants
     // Robot
     public static final int drivingXboxControllerPort = 1;
     public static final int controlXboxControllerPort = 0;
-    
+
     // Shooter
     public static final double shooterP = 0.001;
     public static final double shooterI = 0.0;
     public static final double shooterD = 10.0;
+    public static final double shooterF = 0.00017;
     
     public static int shooterSparkMasterID = 5;
     public static int shooterSparkServantID = 6;
