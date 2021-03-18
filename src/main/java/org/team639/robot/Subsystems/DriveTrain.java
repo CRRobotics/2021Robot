@@ -41,13 +41,13 @@ public class DriveTrain implements Subsystem
     
     // p ~ 1.36
     //PIDController leftPIDController = new PIDController(.986, 0, 0);
-    //PIDController rightPIDController = new PIDController(.986, 0, 0);
+   // PIDController rightPIDController = new PIDController(.986, 0, 0);
 
     //TODO: Try configuring different PID values for more consistent results
     //PIDController leftPIDController = new PIDController(.0002, 0, 0.0);
     //PIDController rightPIDController = new PIDController(0.0002, 0, 0.0);
-    PIDController leftPIDController = new PIDController(.0002, 0, 0.0);
-    PIDController rightPIDController = new PIDController(0.0002, 0, 0.0);
+    PIDController leftPIDController = new PIDController(.00018, 0, 0.0000);
+    PIDController rightPIDController = new PIDController(0.0002, 0, 0.0000);
 
     /**
      * Returns the current wheel speeds of the robot.

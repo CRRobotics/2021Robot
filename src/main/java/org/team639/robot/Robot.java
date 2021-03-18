@@ -70,7 +70,7 @@ public class Robot extends TimedRobot
     private static DataManager dataManager;
     private static double defaultAngle; // In degrees
     //The path you want to use
-    private String trajectoryJSON = "paths/Barrel_Racing.wpilib.json";
+    private String trajectoryJSON = "paths/Slalom.wpilib.json";
 
     NetworkTableEntry testEntry;
     NetworkTable visionTable;
