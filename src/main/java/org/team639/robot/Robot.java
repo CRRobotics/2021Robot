@@ -259,8 +259,12 @@ public class Robot extends TimedRobot
                 driveTrain::setVoltages,
                 driveTrain
                 );
-
-        driveTrain.resetOdometry(pathweaverRunner.getInitialPose());
+        //If non-pathweaver paths are selected, set the parameter to "NonPathPose"
+        // else set parameter to "pathweaverRunner.getInitialPose();"
+        Translation2d nonPathTrans  = new Translation2d(0,0);
+        Rotation2d nonPathRot = new Rotation2d(0,0);
+        Pose2d nonPathPose = new Pose2d(nonPathTrans,nonPathRot);
+        driveTrain.resetOdometry(nonPathPose);
         /*
         switch(m_chooser.getSelected())
         {
