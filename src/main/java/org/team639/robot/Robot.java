@@ -272,7 +272,7 @@ public class Robot extends TimedRobot
         Translation2d nonPathTrans  = new Translation2d(0,0);
         Rotation2d nonPathRot = new Rotation2d(0,0);
         Pose2d nonPathPose = new Pose2d(nonPathTrans,nonPathRot);
-        driveTrain.resetOdometry(nonPathPose);
+        driveTrain.resetOdometry(pathweaverRunner.getInitialPose());
         /*
         switch(m_chooser.getSelected())
         {
