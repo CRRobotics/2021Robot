@@ -1,6 +1,7 @@
 package org.team639.robot.Subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.revrobotics.CANPIDController;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel;
 import com.revrobotics.ControlType;
@@ -25,11 +26,13 @@ public class Shooter implements Subsystem
     //0.2: 1000 RPM
     private static double overallPower = 0.8;
 
-    private boolean maxSpeed;
+    private boolean isMaxSpeed;
 
     private static final double closePower = overallPower;
     private static final double farPower = overallPower;
-    
+
+    private CANPIDController mainShooterPIDs;
+    private CANPIDController secondShooterPIDs;
     private static double shooterSetting = 1;
     private static final double closeHeight = 1;
     private static final double farHeight = 0;
@@ -48,7 +51,7 @@ public class Shooter implements Subsystem
         mainMotor.setSmartCurrentLimit(80);
         secondMotor.setSmartCurrentLimit(80);
 
-        maxSpeed = false;
+        isMaxSpeed = false;
 
     }
 
@@ -61,7 +64,7 @@ public class Shooter implements Subsystem
 
     public void toggleMaxSpeed()
     {
-        maxSpeed = !maxSpeed;
+        isMaxSpeed = !isMaxSpeed;
     }
 
     /**
@@ -69,6 +72,14 @@ public class Shooter implements Subsystem
      */
     public void shoot()
     {
+        mainMotor = new CANSparkMax(Constants.shooterSparkMasterID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        secondMotor = new CANSparkMax(Constants.shooterSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        mainMotor.restoreFactoryDefaults(); secondMotor.restoreFactoryDefaults();
+        mainShooterPIDs = new CANPIDController(mainMotor);
+        secondShooterPIDs = new CANPIDController(secondMotor);
+        //secondMotor.follow(mainMotor);
+        //secondMotor.setInverted(true);
+        secondMotor.setInverted(true);
         //if(!maxSpeed) {
             if (Robot.getShooterPistons().isClose()) {
                 setMotorSpeedClose();
@@ -128,15 +139,5 @@ public class Shooter implements Subsystem
         secondMotor.set(farPower);
     }
     
-    /**
-     * Uses PIDF constants to keep the speed constant while shooting balls.
-     * @param kP
-     * @param kI
-     * @param kD
-     * @param kF
-     */
-    public void setPIDF(double kP,double kI, double kD, double kF){
-        setPIDF(0.001,0,10,0.00017);
-    }
-    
+
 }

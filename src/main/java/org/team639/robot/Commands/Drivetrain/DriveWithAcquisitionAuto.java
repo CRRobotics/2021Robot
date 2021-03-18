@@ -8,7 +8,7 @@ import org.team639.robot.Subsystems.Acquisition;
 import org.team639.robot.Subsystems.DriveTrain;
 import org.team639.robot.Subsystems.Index;
 
-public class DriveWithAcquistionAuto extends CommandBase
+public class DriveWithAcquisitionAuto extends CommandBase
 {
 
     private boolean done;
@@ -40,7 +40,7 @@ public class DriveWithAcquistionAuto extends CommandBase
      * Initializes the command
      * @param distance The distance to travel in meters
      */
-    public DriveWithAcquistionAuto(double distance) {
+    public DriveWithAcquisitionAuto(double distance) {
         negative = distance < 0;
         driveTrain = Robot.getDriveTrain();
         indexer = Robot.getIndexer();
