@@ -70,7 +70,7 @@ public class Robot extends TimedRobot
     private static DataManager dataManager;
     private static double defaultAngle; // In degrees
     //The path you want to use
-    private String trajectoryJSON = "paths/Slalom.wpilib.json";
+    private String trajectoryJSON = "paths/Bounce Path.wpilib.json";
 
     NetworkTableEntry testEntry;
     NetworkTable visionTable;
@@ -90,6 +90,8 @@ public class Robot extends TimedRobot
         NetworkTableInstance inst = NetworkTableInstance.getDefault();
         visionTable = inst.getTable("CameraTracker");
         testEntry = visionTable.getEntry("path");
+        inst.startClientTeam(639);
+        inst.startDSClient();
 
         dataManager = new DataManager();
         defaultAngle = driveTrain.getHeading().getDegrees();
@@ -213,9 +215,10 @@ public class Robot extends TimedRobot
         Trajectory trajectory2 = TrajectoryGenerator.generateTrajectory(
                 new Pose2d(0, 0, new Rotation2d(0)),
                 List.of(
-                        new Translation2d(1, 0)
+                        new Translation2d(1, 0),
+                        new Translation2d(1,1)
                 ),
-                new Pose2d(1, 1, new Rotation2d(Math.PI/2)),
+                new Pose2d(1, 1, new Rotation2d(3.14/2)),
                 config
         );
 
@@ -286,6 +289,7 @@ public class Robot extends TimedRobot
                 return OneMeter;
         }
         */
+
         return ramseteCommand;
 
     }
@@ -305,6 +309,7 @@ public class Robot extends TimedRobot
     {
         SmartDashboard.putString("PoseX", driveTrain.getPose().toString());
         SmartDashboard.putNumberArray("EncoderVal", driveTrain.getPositions());
+        SmartDashboard.putNumber("ChassisWidth", Constants.chassisWidth);
     }
     
     /**

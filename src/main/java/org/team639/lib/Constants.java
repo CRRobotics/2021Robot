@@ -1,5 +1,6 @@
 package org.team639.lib;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Units;
 
 public class Constants
@@ -40,8 +41,7 @@ public class Constants
     public static final double shortShootingPositionDistance = 1.5;
     public static final double longShootingPositionDistance = 7;
     
-    public static final double chassisWidth = .54;
-    
+    public static final double chassisWidth = .7;
     public static final double angleToTurning = 0.4;
     
     public static int leftSparkMasterID = 7;
