@@ -79,7 +79,7 @@ public class DriveAndAcquireBall extends CommandGroupBase {
     {
     autoRotate.execute();
 runAcquisitionForTime.initialize();
-        while (photoInfo.getBalls().size() <= 5 && !done)
+        while (photoInfo.getBalls().size() <= 4 && !done)
         {
             runAcquisitionForTime.execute();
         }
