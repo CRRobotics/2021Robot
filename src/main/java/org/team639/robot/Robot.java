@@ -270,7 +270,7 @@ public class Robot extends TimedRobot
                 driveTrain::setVoltages,
                 driveTrain
                 );
-        //If non-pathweaver paths are selected, set the parameter to "NonPathPose"
+        //If non-pathweaver paths are selected, set the parameter to "nonPathPose"
         // else set parameter to "pathweaverRunner.getInitialPose();"
         Translation2d nonPathTrans  = new Translation2d(0,0);
         Rotation2d nonPathRot = new Rotation2d(0,0);
