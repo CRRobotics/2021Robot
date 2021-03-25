@@ -22,6 +22,7 @@ import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import org.team639.robot.Commands.Acquisition.ContinuallyRun;
 import org.team639.robot.Commands.Acquisition.ManualAcquisition;
 import org.team639.robot.Commands.Acquisition.RunAcquisitionForTime;
 import org.team639.robot.Commands.Acquisition.ToggleAcquisitionPistons;
@@ -55,7 +56,7 @@ public class Robot extends TimedRobot
     private static final String kCustomAuto = "My Auto";
     private String m_autoSelected;
     private final SendableChooser<AutoTypes> m_chooser = new SendableChooser<AutoTypes>();
-    
+    private double test;
     private static DriveTrain driveTrain = new DriveTrain();;
     private static Acquisition acquisition = new Acquisition();
     private static AcquisitionPistons acquisitionPistons = new AcquisitionPistons();
@@ -70,7 +71,7 @@ public class Robot extends TimedRobot
     private static DataManager dataManager;
     private static double defaultAngle; // In degrees
     //The path you want to use
-    private String trajectoryJSON = "paths/Bounce Path.wpilib.json";
+    private String trajectoryJSON = "paths/galacticSearchA.wpilib.json";
 
     NetworkTableEntry testEntry;
     NetworkTable visionTable;
@@ -273,11 +274,10 @@ public class Robot extends TimedRobot
                 config
         );
         */
-
-
         Trajectory pathweaverRunner = loadConfig(trajectoryJSON);
+        Trajectory galB = loadConfig("paths/galacticSearchB.wpilib.json");
 
-        //Runs one meter
+
         RamseteCommand ramseteCommand = new RamseteCommand(
                 pathweaverRunner,
                 driveTrain::getPose,
@@ -296,6 +296,15 @@ public class Robot extends TimedRobot
         Rotation2d nonPathRot = new Rotation2d(0,0);
         Pose2d nonPathPose = new Pose2d(nonPathTrans,nonPathRot);
         driveTrain.resetOdometry(pathweaverRunner.getInitialPose());
+        ParallelRaceGroup acqRunner = new ParallelRaceGroup(
+                new ContinuallyRun(),
+                ramseteCommand
+        );
+        SequentialCommandGroup galA = new SequentialCommandGroup(
+                new ToggleAcquisitionPistons(),
+                acqRunner
+        );
+
         /*
         switch(m_chooser.getSelected())
         {
@@ -309,8 +318,7 @@ public class Robot extends TimedRobot
                 return OneMeter;
         }
         */
-
-        return ramseteCommand;
+        return galA;
 
     }
     
@@ -329,6 +337,9 @@ public class Robot extends TimedRobot
     {
         SmartDashboard.putString("PoseX", driveTrain.getPose().toString());
         SmartDashboard.putNumberArray("EncoderVal", driveTrain.getPositions());
+        testEntry = visionTable.getEntry("path");
+        test = testEntry.getDouble(0);
+        SmartDashboard.putNumber("networkTable test", test);
     }
     
     /**
@@ -353,6 +364,7 @@ public class Robot extends TimedRobot
 
     public void teleopInit()
     {
+        CommandScheduler.getInstance().cancelAll();
         dataManager.connectVisions();
     }
     /**
@@ -431,7 +443,7 @@ public class Robot extends TimedRobot
     @Override
     public void disabledInit()
     {
+        CommandScheduler.getInstance().cancelAll();
         super.disabledInit();
-        //CommandScheduler.getInstance().cancelAll();
     }
 }

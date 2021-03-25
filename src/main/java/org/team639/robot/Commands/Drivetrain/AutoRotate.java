@@ -25,7 +25,7 @@ public class AutoRotate extends CommandBase
     private double currentAngle;
     private boolean clockwise; // + = !clockwise, - = clockwise, just like in math
     
-    private double p = .015;
+    private double p = .014;
     private double i = 0;
     private double d = 0.100;
     
