@@ -231,6 +231,26 @@ public class Robot extends TimedRobot
                 config
         );
 
+        SequentialCommandGroup GalacticSearchB = new SequentialCommandGroup(
+                new AutoDriveForward(7.62),
+                new AutoRotate(90),
+                new AutoDriveForward(1.524),
+                new AutoRotate(90),
+                new AutoDriveForward(15),
+                new AutoRotate(180),
+                new AutoDriveForward(20)
+        );
+
+        SequentialCommandGroup GalacticSearchA = new SequentialCommandGroup(
+                new AutoDriveForward(2.286),
+                new AutoRotate(33.69),
+                new AutoDriveForward(2.7432),
+                new AutoRotate(-123.69),
+                new AutoDriveForward(3.6576),
+                new AutoRotate(123.69),
+                new AutoDriveForward(4.572)
+        );
+
 /*
         //BOX BUG
         Trajectory boxBug = TrajectoryGenerator.generateTrajectory(
@@ -309,7 +329,6 @@ public class Robot extends TimedRobot
     {
         SmartDashboard.putString("PoseX", driveTrain.getPose().toString());
         SmartDashboard.putNumberArray("EncoderVal", driveTrain.getPositions());
-        SmartDashboard.putNumber("ChassisWidth", Constants.chassisWidth);
     }
     
     /**
