@@ -47,12 +47,13 @@ public class Shooter implements Subsystem
         secondMotor = new CANSparkMax(Constants.shooterSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
         mainMotor.restoreFactoryDefaults(); secondMotor.restoreFactoryDefaults();
         mainShooterPIDs = new CANPIDController(mainMotor);
-        secondShooterPIDs = new CANPIDController(secondMotor);
+        //secondShooterPIDs = new CANPIDController(secondMotor);
         mainMotor.restoreFactoryDefaults(); secondMotor.restoreFactoryDefaults();
 
         //secondMotor.follow(mainMotor);
         //secondMotor.setInverted(true);
         secondMotor.setInverted(true);
+        secondMotor.follow(mainMotor);
 
         mainMotor.setSmartCurrentLimit(80);
         secondMotor.setSmartCurrentLimit(80);
@@ -83,10 +84,10 @@ public class Shooter implements Subsystem
         mainShooterPIDs.setI(Constants.shooterI);
         mainShooterPIDs.setD(Constants.shooterD);
         mainShooterPIDs.setFF(Constants.shooterF);
-        secondShooterPIDs.setP(Constants.shooterP);
-        secondShooterPIDs.setI(Constants.shooterI);
-        secondShooterPIDs.setD(Constants.shooterD);
-        secondShooterPIDs.setFF(Constants.shooterF);
+        //secondShooterPIDs.setP(Constants.shooterP);
+        //secondShooterPIDs.setI(Constants.shooterI);
+        //secondShooterPIDs.setD(Constants.shooterD);
+        //secondShooterPIDs.setFF(Constants.shooterF);
         //secondMotor.follow(mainMotor);
         //secondMotor.setInverted(true);
         secondMotor.setInverted(true);
