@@ -129,6 +129,7 @@ public class Robot extends TimedRobot
         OI.DriverButtonA.whenPressed(new ToggleIndexAuto());
         //OI.ControlButtonX.whenPressed(new AutoRotate(90));
         OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(2));
+        OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
 
         //Controller Settings
         OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
