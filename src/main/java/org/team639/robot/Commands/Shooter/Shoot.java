@@ -11,6 +11,7 @@ import org.team639.robot.Subsystems.Index;
 import org.team639.robot.Subsystems.Shooter;
 
 import static org.team639.lib.Constants.shootingTime;
+import static org.team639.robot.Subsystems.Shooter.rpm;
 
 public class Shoot extends CommandBase
 {
@@ -35,14 +36,15 @@ public class Shoot extends CommandBase
         Robot.getDataManager().enableUpperLight();
         done = false;
         //indexer.retractPistons();
-        shooter.shoot();
         CommandScheduler.getInstance().schedule(new MoveBallsToTopShooting());
         startMillis = System.currentTimeMillis();
         waitTimeMillis = shootingTime + Constants.shooterSpinnerExtraTime;
+        shooter.shoot();
     }
     
     public void execute()
     {
+        shooter.feedbackControlShoot();
         if(System.currentTimeMillis() - startMillis >= waitTimeMillis)
         {
             indexer.turnOff();
