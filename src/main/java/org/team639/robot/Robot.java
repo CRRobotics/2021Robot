@@ -130,13 +130,13 @@ public class Robot extends TimedRobot
         OI.DriverButtonA.whenPressed(new ToggleIndexAuto());
         //OI.ControlButtonX.whenPressed(new AutoRotate(90));
         OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(2));
-        OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
+        //OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
 
         //Controller Settings
         OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
         OI.ControlLeftBumper.whenHeld(new JoystickSpinner());
 
-        OI.ControlButtonY.whenPressed(new ShootMaxSpeed());
+        OI.ControlButtonY.whenPressed(new ShotTest());
         OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
         OI.ControlButtonA.whenPressed(new Shoot());
         OI.ControlButtonB.whenPressed(new ToggleShooterPistons());
@@ -170,6 +170,18 @@ public class Robot extends TimedRobot
         ACQAUTO
     }
 
+    public String getGalacticSearch()
+    {
+        if(visionTable.getEntry("path").getDouble(100) == 1)
+            return "A1";
+        else if(visionTable.getEntry("path").getDouble(100) == 100)
+        {
+            System.out.println("-----ERROR No Entry Found-----");
+            return "ERROR: No entry found";
+        }
+        return "B1";
+
+    }
     /**
      * Returns autonomous command to use
      * @return command to be used for autonomous
@@ -276,11 +288,15 @@ public class Robot extends TimedRobot
         );
         */
         Trajectory pathweaverRunner = loadConfig(trajectoryJSON);
-        Trajectory galB = loadConfig("paths/galacticSearchB.wpilib.json");
+        Trajectory gal;
+        if(this.getGalacticSearch().equals("A1"))
+            gal = loadConfig("paths/galacticSearchB.wpilib.json");
+        else
+            gal = loadConfig("paths/galacticSearchA.wpilib.json");
 
 
         RamseteCommand ramseteCommand = new RamseteCommand(
-                pathweaverRunner,
+                gal,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -296,7 +312,8 @@ public class Robot extends TimedRobot
         Translation2d nonPathTrans  = new Translation2d(0,0);
         Rotation2d nonPathRot = new Rotation2d(0,0);
         Pose2d nonPathPose = new Pose2d(nonPathTrans,nonPathRot);
-        driveTrain.resetOdometry(pathweaverRunner.getInitialPose());
+
+        driveTrain.resetOdometry(gal.getInitialPose());
         ParallelRaceGroup acqRunner = new ParallelRaceGroup(
                 new ContinuallyRun(),
                 ramseteCommand
@@ -339,7 +356,7 @@ public class Robot extends TimedRobot
         SmartDashboard.putString("PoseX", driveTrain.getPose().toString());
         SmartDashboard.putNumberArray("EncoderVal", driveTrain.getPositions());
         testEntry = visionTable.getEntry("path");
-        test = testEntry.getDouble(0);
+        test = testEntry.getDouble(9999);
         SmartDashboard.putNumber("networkTable test", test);
     }
     

@@ -25,15 +25,16 @@ public class Shooter implements Subsystem
     //0.6: 3400 RPM
     //0.4: 2200 RPM
     //0.2: 1000 RPM
-    private static double overallPower = 0.8;
+    private static double overallPower = .9;
+    public static int rpm = 5000;
 
     private boolean isMaxSpeed;
 
     private static final double closePower = overallPower;
     private static final double farPower = overallPower;
 
-    private CANPIDController mainShooterPIDs;
-    private CANPIDController secondShooterPIDs;
+    //private CANPIDController mainShooterPIDs;
+    //private CANPIDController secondShooterPIDs;
     private static double shooterSetting = 1;
     private static final double closeHeight = 1;
     private static final double farHeight = 0;
@@ -43,31 +44,34 @@ public class Shooter implements Subsystem
     public Shooter() {
         mainMotor = new CANSparkMax(Constants.shooterSparkMasterID, CANSparkMaxLowLevel.MotorType.kBrushless);
         secondMotor = new CANSparkMax(Constants.shooterSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        mainMotor = new CANSparkMax(Constants.shooterSparkMasterID, CANSparkMaxLowLevel.MotorType.kBrushless);
-        secondMotor = new CANSparkMax(Constants.shooterSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        //mainMotor = new CANSparkMax(Constants.shooterSparkMasterID, CANSparkMaxLowLevel.MotorType.kBrushless);
+        //secondMotor = new CANSparkMax(Constants.shooterSparkServantID, CANSparkMaxLowLevel.MotorType.kBrushless);
         mainMotor.restoreFactoryDefaults(); secondMotor.restoreFactoryDefaults();
-        mainShooterPIDs = new CANPIDController(mainMotor);
+        //mainShooterPIDs = new CANPIDController(mainMotor);
         //secondShooterPIDs = new CANPIDController(secondMotor);
-        mainMotor.restoreFactoryDefaults(); secondMotor.restoreFactoryDefaults();
 
         //secondMotor.follow(mainMotor);
         //secondMotor.setInverted(true);
         secondMotor.setInverted(true);
-        secondMotor.follow(mainMotor);
+        //secondMotor.follow(mainMotor);
 
         mainMotor.setSmartCurrentLimit(80);
         secondMotor.setSmartCurrentLimit(80);
 
+        mainMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
+        secondMotor.setIdleMode(CANSparkMax.IdleMode.kCoast);
         isMaxSpeed = false;
 
     }
 
     public void periodic()
     {
+        toggleRPM(true);
         togglePowers(true);
         SmartDashboard.putNumber("MainMotorRPM", mainMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("SecondaryMotorRPM", secondMotor.getEncoder().getVelocity());
         SmartDashboard.putNumber("ShooterSpeed Percentage", overallPower);
+        SmartDashboard.putNumber("Target RPM", rpm);
     }
 
     public void toggleMaxSpeed()
@@ -75,15 +79,22 @@ public class Shooter implements Subsystem
         isMaxSpeed = !isMaxSpeed;
     }
 
+    public void feedbackControlShoot()
+    {
+        if(mainMotor.getEncoder().getVelocity() > rpm)
+            setSpeed(0);
+        else
+            setSpeed(1);
+    }
     /**
      * Calls either the shootClose or shootFar methods based on what mode the shooter is in
      */
     public void shoot()
     {
-        mainShooterPIDs.setP(Constants.shooterP);
-        mainShooterPIDs.setI(Constants.shooterI);
-        mainShooterPIDs.setD(Constants.shooterD);
-        mainShooterPIDs.setFF(Constants.shooterF);
+        //mainShooterPIDs.setP(Constants.shooterP);
+        //mainShooterPIDs.setI(Constants.shooterI);
+        //mainShooterPIDs.setD(Constants.shooterD);
+        //mainShooterPIDs.setFF(Constants.shooterF);
         //secondShooterPIDs.setP(Constants.shooterP);
         //secondShooterPIDs.setI(Constants.shooterI);
         //secondShooterPIDs.setD(Constants.shooterD);
@@ -109,7 +120,35 @@ public class Shooter implements Subsystem
         mainMotor.set(speed);
         secondMotor.set(speed);
     }
+    public void toggleRPM(boolean toggleUp)
+    {
+        if(OI.ControlDPadRight.get() == true && System.currentTimeMillis() > (lastToggle + 300))
+        {
+            if(rpm != 5000) {
+                rpm += 500;
+                lastToggle = System.currentTimeMillis();
 
+            }
+            else {
+                rpm = 0;
+                lastToggle = System.currentTimeMillis();
+            }
+        }
+        if(OI.ControlDPadLeft.get() == true && System.currentTimeMillis() > (lastToggle + 300))
+        {
+            if(rpm != 0) {
+                rpm -= 500;
+                lastToggle = System.currentTimeMillis();
+
+            }
+            else {
+                overallPower = 5000;
+                lastToggle = System.currentTimeMillis();
+
+            }
+        }
+
+    }
     /**
      * Toggles through the various powers for shooter
      * @param toggleUp Whether the shooter power increases or decreases
