@@ -10,13 +10,14 @@ import org.team639.lib.math.PID;
 import org.team639.robot.Robot;
 import org.team639.robot.Subsystems.DataManager;
 import org.team639.robot.Subsystems.DriveTrain;
+import org.team639.robot.Subsystems.Index;
 import org.team639.robot.Subsystems.PhotoelectricSensor;
 
 
 public class DriveAndAcquireBall extends CommandGroupBase {
     private boolean done;
     private DriveTrain driveTrain;
-
+    private Index indexer;
     private double rotations;
 
     private PID pid;
@@ -78,7 +79,7 @@ public class DriveAndAcquireBall extends CommandGroupBase {
     public void execute()
     {
     autoRotate.execute();
-runAcquisitionForTime.initialize();
+     runAcquisitionForTime.initialize();
         while (photoInfo.getBalls().size() <= 4 && !done)
         {
             runAcquisitionForTime.execute();
@@ -92,6 +93,7 @@ runAcquisitionForTime.initialize();
         driveTrain.setSpeeds(average,average);
     done =((!negative &&(targetRotations< 0||average <=0))
             ||(!negative &&(targetRotations< 0||average <=0)));
+        indexer.turnOn();
     }
 
     public boolean isFinished()
@@ -110,6 +112,7 @@ runAcquisitionForTime.initialize();
         System.out.println("Drive and Acquire Ball Ended");
         driveTrain.setSpeeds(0.0, 0.0);
         super.end(false);
+        indexer.turnOff();
     }
 
 
