@@ -129,8 +129,9 @@ public class Robot extends TimedRobot
         OI.DriverButtonY.whenPressed(new AutoRotateToTarget());
         OI.DriverButtonA.whenPressed(new ToggleIndexAuto());
         OI.ControlButtonX.whenPressed(new AutoRotate(90));
-        OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(2));
-        OI.DriverDPadDown.whenPressed(new AutoDriveForward(3));
+        //3.048 meters = 10 feet = 4 cones on the field
+        OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(3.048));
+        OI.DriverDPadDown.whenPressed(new AutoDriveForward(3.048));
         OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
 
         //Controller Settings
