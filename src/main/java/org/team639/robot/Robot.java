@@ -71,10 +71,13 @@ public class Robot extends TimedRobot
     private static DataManager dataManager;
     private static double defaultAngle; // In degrees
     //The path you want to use
-    private String trajectoryJSON = "paths/galacticSearchA.wpilib.json";
+    //private String trajectoryJSON = "paths/Barrel_RacingTrue.wpilib.json";
+    private String trajectoryJSON;
 
     NetworkTableEntry testEntry;
     NetworkTable visionTable;
+
+    private int runs = 0;
 
 
     //private static AcquisitionToIndexer acquisitionToIndexer = new AcquisitionToIndexer();
@@ -100,6 +103,7 @@ public class Robot extends TimedRobot
         setUpCommands();
         driveTrain.resetOdometry(driveTrain.startPosition);
         dataManager.disableUpperRingLight();
+
     }
     
     /**
@@ -125,7 +129,7 @@ public class Robot extends TimedRobot
     private void setUpXboxController()
     {
         //Driver Settings
-        OI.DriverRightBumper.whenReleased(new ToggleDriveTrainGears());
+        OI.DriverRightBumper.whenPressed(new ToggleDriveTrainGears());
         OI.DriverButtonY.whenPressed(new AutoRotateToTarget());
         OI.DriverButtonA.whenPressed(new ToggleIndexAuto());
         //OI.ControlButtonX.whenPressed(new AutoRotate(90));
@@ -170,17 +174,15 @@ public class Robot extends TimedRobot
         ACQAUTO
     }
 
-    public String getGalacticSearch()
+    public String[] getGalacticSearch()
     {
-        if(visionTable.getEntry("path").getDouble(100) == 1)
-            return "A1";
-        else if(visionTable.getEntry("path").getDouble(100) == 100)
+        if(visionTable.getEntry("route").getDouble(999) == 2)
         {
-            System.out.println("Warning: No Entry Found");
-            return "Warning: No entry found";
+            String[] paths = {"paths/A1.wpilib.json", "paths/B1.wpilib.json"};
+            return paths;
         }
-        return "B1";
-
+        String[] paths2 = {"paths/A2.wpilib.json", "paths/B2.wpilib.json"};
+        return paths2;
     }
     /**
      * Returns autonomous command to use
@@ -188,7 +190,8 @@ public class Robot extends TimedRobot
      */
     public Command getAutonomousCommand()
     {
-
+        String[] temp = getGalacticSearch();
+        trajectoryJSON = temp[runs - 1];
         /*
         return new MoveRotateChain(new Command[] {
                 new Shoot(),
@@ -288,15 +291,14 @@ public class Robot extends TimedRobot
         );
         */
         Trajectory pathweaverRunner = loadConfig(trajectoryJSON);
-        Trajectory gal;
-        if(this.getGalacticSearch().equals("A1"))
-            gal = loadConfig("paths/galacticSearchB.wpilib.json");
-        else
-            gal = loadConfig("paths/galacticSearchA.wpilib.json");
+        //if(this.getGalacticSearch().equals("A1"))
+        //    gal = loadConfig("paths/galacticSearchB.wpilib.json");
+        //else
+        //    gal = loadConfig("paths/galacticSearchA.wpilib.json");
 
 
         RamseteCommand ramseteCommand = new RamseteCommand(
-                gal,
+                pathweaverRunner,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -313,7 +315,7 @@ public class Robot extends TimedRobot
         Rotation2d nonPathRot = new Rotation2d(0,0);
         Pose2d nonPathPose = new Pose2d(nonPathTrans,nonPathRot);
 
-        driveTrain.resetOdometry(gal.getInitialPose());
+        driveTrain.resetOdometry(pathweaverRunner.getInitialPose());
         ParallelRaceGroup acqRunner = new ParallelRaceGroup(
                 new ContinuallyRun(),
                 ramseteCommand
@@ -355,9 +357,11 @@ public class Robot extends TimedRobot
     {
         SmartDashboard.putString("PoseX", driveTrain.getPose().toString());
         SmartDashboard.putNumberArray("EncoderVal", driveTrain.getPositions());
-        testEntry = visionTable.getEntry("path");
+        testEntry = visionTable.getEntry("route");
         test = testEntry.getDouble(9999);
         SmartDashboard.putNumber("networkTable test", test);
+        SmartDashboard.putNumber("kdjfhgkjfsghkjdf", runs);
+
     }
     
     /**

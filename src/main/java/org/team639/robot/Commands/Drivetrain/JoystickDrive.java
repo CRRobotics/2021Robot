@@ -117,7 +117,14 @@ public class JoystickDrive extends CommandBase
         }
 
     }
-    
+
+    /**
+     * Returns maximum if input exceeds maximum input
+     * @param min Minimum possible input
+     * @param max Maximum possible input
+     * @param input Input required
+     * @return
+     */
     private double clamp(double min, double max, double input)
     {
         if(input < min)
