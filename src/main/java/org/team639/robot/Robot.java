@@ -136,7 +136,7 @@ public class Robot extends TimedRobot
         OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
         OI.ControlLeftBumper.whenHeld(new JoystickSpinner());
 
-        OI.ControlButtonY.whenPressed(new ShotTest());
+        OI.ControlButtonY.whenPressed(new ShootMaxSpeed());
         OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
         OI.ControlButtonA.whenPressed(new Shoot());
         OI.ControlButtonB.whenPressed(new ToggleShooterPistons());
@@ -176,8 +176,8 @@ public class Robot extends TimedRobot
             return "A1";
         else if(visionTable.getEntry("path").getDouble(100) == 100)
         {
-            System.out.println("-----ERROR No Entry Found-----");
-            return "ERROR: No entry found";
+            System.out.println("Warning: No Entry Found");
+            return "Warning: No entry found";
         }
         return "B1";
 

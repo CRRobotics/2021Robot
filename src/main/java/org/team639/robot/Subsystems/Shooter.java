@@ -25,7 +25,7 @@ public class Shooter implements Subsystem
     //0.6: 3400 RPM
     //0.4: 2200 RPM
     //0.2: 1000 RPM
-    private static double overallPower = .9;
+    private static double overallPower = 1;
     public static int rpm = 5000;
 
     private boolean isMaxSpeed;
@@ -79,7 +79,7 @@ public class Shooter implements Subsystem
         isMaxSpeed = !isMaxSpeed;
     }
 
-    public void feedbackControlShoot()
+    public void BangBangControl()
     {
         if(mainMotor.getEncoder().getVelocity() > rpm)
             setSpeed(0);
@@ -120,11 +120,16 @@ public class Shooter implements Subsystem
         mainMotor.set(speed);
         secondMotor.set(speed);
     }
+
+    /**
+     * Toggles through the various RPM for shooter
+     * @param toggleUp Whether the shooter power increases or decreases
+     */
     public void toggleRPM(boolean toggleUp)
     {
         if(OI.ControlDPadRight.get() == true && System.currentTimeMillis() > (lastToggle + 300))
         {
-            if(rpm != 5000) {
+            if(rpm != 5500) {
                 rpm += 500;
                 lastToggle = System.currentTimeMillis();
 

@@ -44,7 +44,7 @@ public class Shoot extends CommandBase
     
     public void execute()
     {
-        shooter.feedbackControlShoot();
+        shooter.BangBangControl();
         if(System.currentTimeMillis() - startMillis >= waitTimeMillis)
         {
             indexer.turnOff();
