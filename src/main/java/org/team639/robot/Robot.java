@@ -132,9 +132,11 @@ public class Robot extends TimedRobot
         OI.DriverRightBumper.whenPressed(new ToggleDriveTrainGears());
         OI.DriverButtonY.whenPressed(new AutoRotateToTarget());
         OI.DriverButtonA.whenPressed(new ToggleIndexAuto());
-        //OI.ControlButtonX.whenPressed(new AutoRotate(90));
-        OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(2));
-        //OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
+        OI.ControlButtonX.whenPressed(new AutoRotate(90));
+        //3.048 meters = 10 feet = 4 cones on the field
+        OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(3.048));
+        OI.DriverDPadDown.whenPressed(new AutoDriveForward(3.048));
+        OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
 
         //Controller Settings
         OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
@@ -268,6 +270,15 @@ public class Robot extends TimedRobot
                 new AutoDriveForward(4.572)
         );
 
+        SequentialCommandGroup VisionGalacticSearch = new SequentialCommandGroup(
+                new DriveAndAcquireBall(),
+                new DriveAndAcquireBall(),
+                new DriveAndAcquireBall(),
+                new AutoRotate(0);
+                new AutoDriveForward(2);
+        );
+
+
 /*
         //BOX BUG
         Trajectory boxBug = TrajectoryGenerator.generateTrajectory(
@@ -309,13 +320,12 @@ public class Robot extends TimedRobot
                 driveTrain::setVoltages,
                 driveTrain
                 );
-        //If non-pathweaver paths are selected, set the parameter to "nonPathPose"
-        // else set parameter to "pathweaverRunner.getInitialPose();"
+
         Translation2d nonPathTrans  = new Translation2d(0,0);
         Rotation2d nonPathRot = new Rotation2d(0,0);
         Pose2d nonPathPose = new Pose2d(nonPathTrans,nonPathRot);
 
-        driveTrain.resetOdometry(pathweaverRunner.getInitialPose());
+
         ParallelRaceGroup acqRunner = new ParallelRaceGroup(
                 new ContinuallyRun(),
                 ramseteCommand
