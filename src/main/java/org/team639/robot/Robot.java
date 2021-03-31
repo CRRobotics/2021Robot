@@ -267,6 +267,13 @@ public class Robot extends TimedRobot
                 new AutoDriveForward(4.572)
         );
 
+        SequentialCommandGroup VisionGalacticSearch = new SequentialCommandGroup(
+                new DriveAndAcquireBall(),
+                new DriveAndAcquireBall(),
+                new DriveAndAcquireBall()
+        );
+
+
 /*
         //BOX BUG
         Trajectory boxBug = TrajectoryGenerator.generateTrajectory(
