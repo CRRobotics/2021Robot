@@ -270,7 +270,9 @@ public class Robot extends TimedRobot
         SequentialCommandGroup VisionGalacticSearch = new SequentialCommandGroup(
                 new DriveAndAcquireBall(),
                 new DriveAndAcquireBall(),
-                new DriveAndAcquireBall()
+                new DriveAndAcquireBall(),
+                new AutoRotate(0);
+                new AutoDriveForward(2);
         );
 
 
