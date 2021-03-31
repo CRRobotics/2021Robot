@@ -68,11 +68,16 @@ public class DriveAndAcquireBall extends CommandGroupBase {
         findBall();
         System.out.println("Target Angle is " + targetAngle + "degrees away");
         System.out.println("Driving to target: " + targetMeters + " meters");
-        done = false;
         //initialEncoderPositions = driveTrain.getPositions();
         targetEncoderPositionLeft = targetEncoderUnits + driveTrain.getPositions()[0];
         targetEncoderPositionRight = targetEncoderUnits + driveTrain.getPositions()[1];
         pid = new PID(Constants.autoDriveForwardP, Constants.autoDriveForwardI, Constants.autoDriveForwardD, 0.01, .5, 0.01, 0.25, 0);
+        if (targetMeters == -1 && targetAngle == -1)
+        {
+            System.out.println("No ball found");
+            done = true;
+        }
+        else done = false;
     }
 
     @Override
@@ -88,7 +93,7 @@ public class DriveAndAcquireBall extends CommandGroupBase {
         //{
             //runAcquisitionForTime.execute();
         //}
-        while (Robot.getDataManager().getBalls().size() < 4)
+        while (Robot.getDataManager().getBalls().size() < 4 && !done)
         {
             runAcquisitionForTime.execute();
         }
