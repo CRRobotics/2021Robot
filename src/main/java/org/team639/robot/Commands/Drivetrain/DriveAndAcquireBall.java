@@ -37,7 +37,8 @@ public class DriveAndAcquireBall extends CommandGroupBase {
     private double rightEncoderDiff;
 
     private boolean negative;
-    private DataManager photoInfo;
+    //private DataManager photoInfo;
+
 
     public DriveAndAcquireBall() {
 
@@ -46,18 +47,21 @@ public class DriveAndAcquireBall extends CommandGroupBase {
         addCommands(runAcquisitionForTime);
         driveTrain = Robot.getDriveTrain();
         addRequirements(driveTrain);
-        photoInfo = new DataManager();
+        //photoInfo = new DataManager();
         findBall();
         autoRotate = new AutoRotate(targetAngle);
     }
 
-    public void findBall() {
-        targetMeters = photoInfo.getClosestBall()[0];
+    public void findBall()
+    {
+        //targetMeters = photoInfo.getClosestBall()[0];
+        targetMeters = Robot.getDataManager().getClosestBall()[0];
         negative = targetMeters < 0;
         targetRotations = targetMeters * Constants.inchesToRotations;
         targetEncoderUnits = targetRotations * Constants.rotationsToEncoderUnits;
         targetEncoderUnits *= Constants.driveTrainGearRatio;
-        targetAngle = photoInfo.outerHorizontalAngle;
+        //targetAngle = photoInfo.outerHorizontalAngle;
+        targetAngle = Robot.getDataManager().outerHorizontalAngle;
     }
 
     public void initialize() {
@@ -80,7 +84,11 @@ public class DriveAndAcquireBall extends CommandGroupBase {
     {
     autoRotate.execute();
      runAcquisitionForTime.initialize();
-        while (photoInfo.getBalls().size() <= 4 && !done)
+        //while (photoInfo.getBalls().size() <= 4 && !done)
+        //{
+            //runAcquisitionForTime.execute();
+        //}
+        while (Robot.getDataManager().getBalls().size() < 4)
         {
             runAcquisitionForTime.execute();
         }

@@ -464,4 +464,16 @@ public class Robot extends TimedRobot
         CommandScheduler.getInstance().cancelAll();
         super.disabledInit();
     }
+
+    public int getClosestBall()
+    {
+        return (int)dataManager.getClosestBall()[0];
+    }
+
+    public double outerHorizontalAngle()
+    {
+        return dataManager.outerHorizontalAngle;
+    }
+
+
 }
