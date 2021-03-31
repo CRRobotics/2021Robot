@@ -125,12 +125,13 @@ public class Robot extends TimedRobot
     private void setUpXboxController()
     {
         //Driver Settings
-        OI.DriverRightBumper.whenReleased(new ToggleDriveTrainGears());
+        OI.DriverRightBumper.whenPressed(new ToggleDriveTrainGears());
         OI.DriverButtonY.whenPressed(new AutoRotateToTarget());
         OI.DriverButtonA.whenPressed(new ToggleIndexAuto());
-        //OI.ControlButtonX.whenPressed(new AutoRotate(90));
+        OI.ControlButtonX.whenPressed(new AutoRotate(90));
         OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(2));
-        //OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
+        OI.DriverDPadDown.whenPressed(new AutoDriveForward(3));
+        OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
 
         //Controller Settings
         OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
@@ -307,13 +308,17 @@ public class Robot extends TimedRobot
                 driveTrain::setVoltages,
                 driveTrain
                 );
-        //If non-pathweaver paths are selected, set the parameter to "nonPathPose"
-        // else set parameter to "pathweaverRunner.getInitialPose();"
+
         Translation2d nonPathTrans  = new Translation2d(0,0);
         Rotation2d nonPathRot = new Rotation2d(0,0);
         Pose2d nonPathPose = new Pose2d(nonPathTrans,nonPathRot);
 
+        //If non-pathweaver paths are selected, set the parameter to "nonPathPose"
+        // else set parameter to "pathweaverRunner.getInitialPose();"
+        // or [name of path].getInitialPose
         driveTrain.resetOdometry(gal.getInitialPose());
+
+
         ParallelRaceGroup acqRunner = new ParallelRaceGroup(
                 new ContinuallyRun(),
                 ramseteCommand
