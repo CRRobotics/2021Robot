@@ -1,5 +1,6 @@
 package org.team639.robot;
 
+import com.fasterxml.jackson.databind.deser.impl.ReadableObjectId;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
@@ -135,8 +136,8 @@ public class Robot extends TimedRobot
         OI.ControlButtonX.whenPressed(new AutoRotate(90));
         //3.048 meters = 10 feet = 4 cones on the field
         OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(3.048));
-        OI.DriverDPadDown.whenPressed(new AutoDriveForward(3.048));
-        OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
+        OI.DriverDPadUp.whenPressed(new AutoDriveForward(3.048));
+        //OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
 
         //Controller Settings
         OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
@@ -269,13 +270,15 @@ public class Robot extends TimedRobot
                 new AutoRotate(123.69),
                 new AutoDriveForward(4.572)
         );
-
+        double targetAngle = Robot.dataManager.outerHorizontalAngle;
+        double targetDistance = Robot.dataManager.getClosestBall()[0];
         SequentialCommandGroup VisionGalacticSearch = new SequentialCommandGroup(
-                new DriveAndAcquireBall(),
-                new DriveAndAcquireBall(),
-                new DriveAndAcquireBall(),
-                new AutoRotate(0),
-                new AutoDriveForward(3.048)
+                new AutoRotate(targetAngle),
+                new DriveWithAcquisitionAuto(targetDistance),
+                new AutoRotate(targetAngle),
+                new DriveWithAcquisitionAuto(targetDistance),
+                new AutoRotate(targetAngle),
+                new DriveWithAcquisitionAuto(targetDistance)
         );
 
 
