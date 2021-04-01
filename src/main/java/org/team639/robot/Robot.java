@@ -136,7 +136,7 @@ public class Robot extends TimedRobot
         //3.048 meters = 10 feet = 4 cones on the field
         OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(3.048));
         OI.DriverDPadDown.whenPressed(new AutoDriveForward(3.048));
-        OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
+        //OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
 
         //Controller Settings
         OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
@@ -192,19 +192,9 @@ public class Robot extends TimedRobot
      */
     public Command getAutonomousCommand()
     {
-        String[] temp = getGalacticSearch();
-        trajectoryJSON = temp[runs - 1];
-        /*
-        return new MoveRotateChain(new Command[] {
-                new Shoot(),
-                new AutoRotate(180),
-                new AutoDriveForwardWhileAcquisitionRunning(2),
-                new AutoRotate(180),
-                new AutoDriveForward(2),
-                new Shoot(),
-                new AutoRotate(180)});
-         */
-
+        //runs ++;
+        //String[] temp = getGalacticSearch();
+        trajectoryJSON = "paths/slalomTrueTrue1.wpilib.json";
         var autoVoltageConstraint =
                 new DifferentialDriveVoltageConstraint(
                         new SimpleMotorFeedforward(DriveConstants.ksVolts,
@@ -241,15 +231,7 @@ public class Robot extends TimedRobot
                 config
         );
 
-        Trajectory meter = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0, 0, new Rotation2d(0)),
-                List.of(
-                        new Translation2d(3, 0)
-                ),
-                new Pose2d(5, 0, new Rotation2d(0)),
-                config
-        );
-
+/*
         SequentialCommandGroup GalacticSearchB = new SequentialCommandGroup(
                 new AutoDriveForward(7.62),
                 new AutoRotate(90),
@@ -259,6 +241,8 @@ public class Robot extends TimedRobot
                 new AutoRotate(180),
                 new AutoDriveForward(20)
         );
+
+
 
         SequentialCommandGroup GalacticSearchA = new SequentialCommandGroup(
                 new AutoDriveForward(2.286),
@@ -274,33 +258,12 @@ public class Robot extends TimedRobot
                 new DriveAndAcquireBall(),
                 new DriveAndAcquireBall(),
                 new DriveAndAcquireBall(),
-                new AutoRotate(0);
-                new AutoDriveForward(2);
+                new AutoRotate(0),
+                new AutoDriveForward(2)
         );
+*/
 
 
-/*
-        //BOX BUG
-        Trajectory boxBug = TrajectoryGenerator.generateTrajectory(
-                new Pose2d(0,0, new Rotation2d(0)),
-                List.of(
-                        new Translation2d(2,0),
-                        new Translation2d(2,2),
-                        new Translation2d(0,2),
-                        new Translation2d(0,0),
-                        new Translation2d(2,0),
-                        new Translation2d(2,2),
-                        new Translation2d(0,2),
-                        new Translation2d(0,0),
-                        new Translation2d(2,0),
-                        new Translation2d(2,2),
-                        new Translation2d(0,2),
-                        new Translation2d(0,0)
-                ),
-                new Pose2d(0,0, new Rotation2d(0)),
-                config
-        );
-        */
         Trajectory pathweaverRunner = loadConfig(trajectoryJSON);
         //if(this.getGalacticSearch().equals("A1"))
         //    gal = loadConfig("paths/galacticSearchB.wpilib.json");
@@ -324,8 +287,8 @@ public class Robot extends TimedRobot
         Translation2d nonPathTrans  = new Translation2d(0,0);
         Rotation2d nonPathRot = new Rotation2d(0,0);
         Pose2d nonPathPose = new Pose2d(nonPathTrans,nonPathRot);
-
-
+        driveTrain.resetOdometry(pathweaverRunner.getInitialPose());
+/*
         ParallelRaceGroup acqRunner = new ParallelRaceGroup(
                 new ContinuallyRun(),
                 ramseteCommand
@@ -334,6 +297,8 @@ public class Robot extends TimedRobot
                 new ToggleAcquisitionPistons(),
                 acqRunner
         );
+        */
+
 
         /*
         switch(m_chooser.getSelected())
@@ -348,7 +313,7 @@ public class Robot extends TimedRobot
                 return OneMeter;
         }
         */
-        return galA;
+        return ramseteCommand;
 
     }
     
@@ -371,7 +336,6 @@ public class Robot extends TimedRobot
         test = testEntry.getDouble(9999);
         SmartDashboard.putNumber("networkTable test", test);
         SmartDashboard.putNumber("kdjfhgkjfsghkjdf", runs);
-
     }
     
     /**

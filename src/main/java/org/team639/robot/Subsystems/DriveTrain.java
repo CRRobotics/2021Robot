@@ -48,8 +48,8 @@ public class DriveTrain implements Subsystem
     //PIDController rightPIDController = new PIDController(0.0002, 0, 0.0);
 
     //Could possible try two different values for left and right controllers?
-    PIDController leftPIDController = new PIDController(0.0002, 0, 0.0000);
-    PIDController rightPIDController = new PIDController(0.0002, 0, 0.0000);
+    PIDController leftPIDController = new PIDController(0.00015, 0, 0.0000);
+    PIDController rightPIDController = new PIDController(0.00015, 0, 0.0000);
 
     /**
      * Returns the current wheel speeds of the robot.
