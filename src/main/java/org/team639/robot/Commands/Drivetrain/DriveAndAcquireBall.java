@@ -54,6 +54,7 @@ public class DriveAndAcquireBall extends CommandGroupBase {
         autoRotate = new AutoRotate(targetAngle);
         //Run acquisition for time created that runs until the CommandScheduler refreshes
         runAcquisitionForTime = new RunAcquisitionForTime(20);
+        driveWithAcquisitionAuto = new DriveWithAcquisitionAuto(targetMeters);
     }
 
     public void findBall()
@@ -82,6 +83,8 @@ public class DriveAndAcquireBall extends CommandGroupBase {
             done = true;
         }
         else done = false;
+        autoRotate.execute();
+        driveWithAcquisitionAuto.execute();
     }
 
     @Override
@@ -91,7 +94,6 @@ public class DriveAndAcquireBall extends CommandGroupBase {
 
     public void execute()
     {
-        autoRotate.execute();
         //indexer.turnOn();
         runAcquisitionForTime.initialize();
         //while (photoInfo.getBalls().size() <= 4 && !done)
@@ -102,11 +104,11 @@ public class DriveAndAcquireBall extends CommandGroupBase {
         //{
             runAcquisitionForTime.execute();
         //}
-     double[] positions = driveTrain.getPositions();
-     double leftEncoderPosition = positions[0];
-     double rightEncoderPosition = positions[1];
-     leftEncoderDiff =targetEncoderPositionLeft -leftEncoderPosition;
-     rightEncoderDiff =targetEncoderPositionRight -rightEncoderPosition;
+       //double[] positions = driveTrain.getPositions();
+     //double leftEncoderPosition = positions[0];
+     //double rightEncoderPosition = positions[1];
+     //leftEncoderDiff =targetEncoderPositionLeft -leftEncoderPosition;
+     //rightEncoderDiff =targetEncoderPositionRight -rightEncoderPosition;
      double average = pid.compute((leftEncoderDiff + rightEncoderDiff) / 2.0);
         driveTrain.setSpeeds(average,average);
      done =((!negative &&(targetRotations< 0||average <=0))
