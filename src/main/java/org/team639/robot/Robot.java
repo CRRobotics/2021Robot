@@ -274,8 +274,8 @@ public class Robot extends TimedRobot
                 new DriveAndAcquireBall(),
                 new DriveAndAcquireBall(),
                 new DriveAndAcquireBall(),
-                new AutoRotate(0);
-                new AutoDriveForward(2);
+                new AutoRotate(0),
+                new AutoDriveForward(3.048)
         );
 
 

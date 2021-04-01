@@ -48,8 +48,14 @@ public class DriveTrain implements Subsystem
     //PIDController rightPIDController = new PIDController(0.0002, 0, 0.0);
 
     //Could possible try two different values for left and right controllers?
+    //Cafeteria floor (without carpet) PIDS
     PIDController leftPIDController = new PIDController(0.0002, 0, 0.0000);
     PIDController rightPIDController = new PIDController(0.0002, 0, 0.0000);
+
+    //TODO: tune PIDS for carpet and keep PIDS for floor on hand.
+    //Carpet PIDS
+    //PIDController leftPIDController = new PIDController(0,0,0);
+    //PIDController rightPIDController = new PIDController(0,0,0);
 
     /**
      * Returns the current wheel speeds of the robot.

@@ -7,6 +7,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import edu.wpi.first.wpilibj2.command.CommandGroupBase;
 import org.team639.lib.Constants;
 import org.team639.lib.math.PID;
+import org.team639.robot.Commands.Acquisition.RunAcquisitionForTime;
 import org.team639.robot.Robot;
 import org.team639.robot.Subsystems.DataManager;
 import org.team639.robot.Subsystems.DriveTrain;
@@ -40,7 +41,8 @@ public class DriveAndAcquireBall extends CommandGroupBase {
     //private DataManager photoInfo;
 
 
-    public DriveAndAcquireBall() {
+    public DriveAndAcquireBall()
+    {
 
         addCommands(autoRotate);
         addCommands(driveWithAcquisitionAuto);
@@ -50,6 +52,8 @@ public class DriveAndAcquireBall extends CommandGroupBase {
         //photoInfo = new DataManager();
         findBall();
         autoRotate = new AutoRotate(targetAngle);
+        //Run acquisition for time created that runs until the CommandScheduler refreshes
+        runAcquisitionForTime = new RunAcquisitionForTime(20);
     }
 
     public void findBall()
@@ -87,26 +91,27 @@ public class DriveAndAcquireBall extends CommandGroupBase {
 
     public void execute()
     {
-    autoRotate.execute();
-     runAcquisitionForTime.initialize();
+        autoRotate.execute();
+        //indexer.turnOn();
+        runAcquisitionForTime.initialize();
         //while (photoInfo.getBalls().size() <= 4 && !done)
         //{
             //runAcquisitionForTime.execute();
         //}
-        while (Robot.getDataManager().getBalls().size() < 4 && !done)
-        {
+        //while (Robot.getDataManager().getBalls().size() < 4 && !done)
+        //{
             runAcquisitionForTime.execute();
-        }
-    double[] positions = driveTrain.getPositions();
-    double leftEncoderPosition = positions[0];
-    double rightEncoderPosition = positions[1];
-    leftEncoderDiff =targetEncoderPositionLeft -leftEncoderPosition;
-    rightEncoderDiff =targetEncoderPositionRight -rightEncoderPosition;
-    double average = pid.compute((leftEncoderDiff + rightEncoderDiff) / 2.0);
+        //}
+     double[] positions = driveTrain.getPositions();
+     double leftEncoderPosition = positions[0];
+     double rightEncoderPosition = positions[1];
+     leftEncoderDiff =targetEncoderPositionLeft -leftEncoderPosition;
+     rightEncoderDiff =targetEncoderPositionRight -rightEncoderPosition;
+     double average = pid.compute((leftEncoderDiff + rightEncoderDiff) / 2.0);
         driveTrain.setSpeeds(average,average);
-    done =((!negative &&(targetRotations< 0||average <=0))
+     done =((!negative &&(targetRotations< 0||average <=0))
             ||(!negative &&(targetRotations< 0||average <=0)));
-        indexer.turnOn();
+      indexer.turnOff();
     }
 
     public boolean isFinished()
