@@ -132,7 +132,6 @@ public class Robot extends TimedRobot
         OI.DriverRightBumper.whenPressed(new ToggleDriveTrainGears());
         OI.DriverButtonY.whenPressed(new AutoRotateToTarget());
         OI.DriverButtonA.whenPressed(new ToggleIndexAuto());
-        OI.ControlButtonX.whenPressed(new AutoRotate(90));
         //3.048 meters = 10 feet = 4 cones on the field
         OI.DriverButtonB.whenPressed(new DriveWithAcquisitionAuto(3.048));
         OI.DriverDPadDown.whenPressed(new AutoDriveForward(3.048));
@@ -230,6 +229,14 @@ public class Robot extends TimedRobot
                 new Pose2d(1, 1, new Rotation2d(3.14/2)),
                 config
         );
+        Trajectory meter = TrajectoryGenerator.generateTrajectory(
+                new Pose2d(0, 0, new Rotation2d(0)),
+                List.of(
+                        new Translation2d(1, 0)
+                ),
+                new Pose2d(2, 0, new Rotation2d(0)),
+                config
+        );
 
 /*
         SequentialCommandGroup GalacticSearchB = new SequentialCommandGroup(
@@ -272,7 +279,7 @@ public class Robot extends TimedRobot
 
 
         RamseteCommand ramseteCommand = new RamseteCommand(
-                pathweaverRunner,
+                meter,
                 driveTrain::getPose,
                 new RamseteController(2.0, 0.7),
                 driveTrain.getFeedForward(),
@@ -287,7 +294,7 @@ public class Robot extends TimedRobot
         Translation2d nonPathTrans  = new Translation2d(0,0);
         Rotation2d nonPathRot = new Rotation2d(0,0);
         Pose2d nonPathPose = new Pose2d(nonPathTrans,nonPathRot);
-        driveTrain.resetOdometry(pathweaverRunner.getInitialPose());
+        driveTrain.resetOdometry(nonPathPose);
 /*
         ParallelRaceGroup acqRunner = new ParallelRaceGroup(
                 new ContinuallyRun(),
