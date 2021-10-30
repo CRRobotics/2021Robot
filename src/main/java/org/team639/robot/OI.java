@@ -43,4 +43,7 @@ public class OI
     public static LeftJoystickButton ControlLeftStickUp = new LeftJoystickButton(ControlController, true);
     public static LeftJoystickButton ControlLeftStickDown = new LeftJoystickButton(ControlController, false);
 
+    public static RightJoystickButton ControlRightStickUp = new RightJoystickButton(ControlController, true);
+    public static RightJoystickButton ControlRightStickDown = new RightJoystickButton(ControlController, false);
+
 }

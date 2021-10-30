@@ -22,7 +22,6 @@ public class TriggerIndexer extends CommandBase
 
     public void initialize()
     {
-        if(!Robot.climbingJoysticksEnabled)
             indexer.setSpeed(speed);
     }
     public void end(boolean interrupted)

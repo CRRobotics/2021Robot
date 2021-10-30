@@ -13,26 +13,27 @@ public class ContinuallyRun extends CommandBase
     private long waitTimeMillis;
     private boolean done;
 
-
-    public ContinuallyRun()
+    private boolean isUp;
+    public ContinuallyRun(boolean isUp)
     {
-        indexer = Robot.getIndexer();
+        this.isUp = isUp;
         acquisition = Robot.getAcquisition();
         done = false;
-        addRequirements(indexer);
         addRequirements(acquisition);
     }
 
     public void initialize()
     {
-        acquisition.runAcquisition();
-        indexer.turnOn();
-        indexer.extendPistons();
+        if(isUp) {
+            acquisition.runAcquisition();
+        }
+        else{
+            acquisition.reversePortMotor();
+        }
     }
 
     public void end()
     {
         acquisition.stopAcquisition();
-        indexer.turnOff();
     }
 }

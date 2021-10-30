@@ -138,15 +138,25 @@ public class Robot extends TimedRobot
         //OI.DriverDPadUp.whenPressed(new DriveAndAcquireBall());
 
         //Controller Settings
-        OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
+        //OI.ControlRightBumper.whenPressed(new ToggleClimbingControls());
         OI.ControlLeftBumper.whenHeld(new JoystickSpinner());
 
         OI.ControlButtonY.whenPressed(new ShootMaxSpeed());
         OI.ControlButtonX.whenPressed(new ToggleAcquisitionPistons());
         OI.ControlButtonA.whenPressed(new Shoot());
         OI.ControlButtonB.whenPressed(new ToggleShooterPistons());
+
         OI.ControlLeftStickUp.whenHeld(new TriggerIndexer(1));
         OI.ControlLeftStickDown.whenHeld(new TriggerIndexer(-1));
+
+        OI.ControlRightStickUp.whenHeld(new TriggerIndexer(1));
+        OI.ControlRightStickDown.whenHeld(new TriggerIndexer(-1));
+
+        OI.ControlRightStickUp.whenHeld(new ContinuallyRun(false));
+        OI.ControlRightStickDown.whenHeld(new ContinuallyRun(true));
+
+
+
 
 
     }
